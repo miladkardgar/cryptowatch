@@ -10,15 +10,10 @@ use BotMan\Drivers\Telegram\TelegramDriver;
 class data extends Controller
 {
 
-    public function handle()
-    {
-        $botman = app('botman');
-
-        $botman->listen();
-    }
-    //
     public function getData()
     {
+
+
 
         $curl = curl_init();
 
@@ -35,7 +30,7 @@ class data extends Controller
                 "apikey: vmPUZE6mv9SD5VNHk4HlWFsOr6aKE2zvsw0MuIgwCIPy6utIco14y7Ju91duEh8A",
                 "cache-control: no-cache",
                 "content-type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW",
-                "postman-token: 48d20685-715f-1d43-f532-ef2aa1ab3292",
+                "postman-token: 89086315-fd8b-8320-275d-c4cbad09b761",
                 "secretkey: NhqPtmdSJYdKjVHjA7PZj4Mge3R5YNiP1e3UZjInClVN65XAbvqqM6A7H5fATj0j"
             ),
         ));
@@ -52,5 +47,6 @@ class data extends Controller
             $botman->say($response, env('TELEGRAM_CHANNEL'), TelegramDriver::class);
             echo $response;
         }
+
     }
 }
