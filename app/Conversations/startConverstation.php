@@ -35,9 +35,9 @@ class startConverstation extends Conversation
                     $username = $user->getUsername();
                     $chatId = $user->getId();
 
-                    $connection = new \mysqli("localhost", "root", "68066806", "cryptowatch");
-                    if ($connection->connect_error)
-                    $connection->query("INSERT INTO crypto_users (`name`,`last_name`,`chat_id`,`username`) VALUE (`".$name."`,`".$lastName."`,`".$username."`,`".$chatId."`)");
+//                    $connection = new \mysqli("localhost", "root", "68066806", "cryptowatch");
+//                    if ($connection->connect_error)
+//                    $connection->query("INSERT INTO crypto_users (`name`,`last_name`,`chat_id`,`username`) VALUE (`".$name."`,`".$lastName."`,`".$username."`,`".$chatId."`)");
                     $this->askCoins();
                 } elseif ($answer->getValue() === 'moreInformation') {
                     $this->say(Inspiring::quote());
