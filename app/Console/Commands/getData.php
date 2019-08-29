@@ -67,7 +67,7 @@ class getData extends Command
         } else {
             $response = json_decode($response, true);
             if($response['price']>1){
-                $response['price']=number_format(round($response['price'],2));
+                $response['price']=number_format(round($response['price'],2),2);
             }
             $res .= "---------------------------------\n";
             $res .= "┌💎: #" . $response['symbol'] . "\n";
@@ -100,7 +100,7 @@ class getData extends Command
             $response = json_decode($response, true);
 
             if($response['price']>1){
-                $response['price']=number_format(round($response['price'],2));
+                $response['price']=number_format(round($response['price'],2),2);
             }
             $res .= "├AVGPrice: \n";
             $res .= "┊├minutes: " . $response['mins'] . "\n";
@@ -133,12 +133,12 @@ class getData extends Command
             $response = json_decode($response, true);
 
             if($response['priceChange']>1){
-                $response['priceChange']=number_format(round($response['priceChange'],2));
+                $response['priceChange']=number_format(round($response['priceChange'],2),2);
             }
             if($response['volume']>1){
-                $response['volume']=number_format(round($response['volume'],2));
+                $response['volume']=number_format(round($response['volume'],2),2);
             }if($response['quoteVolume']>1){
-                $response['quoteVolume']=number_format(round($response['quoteVolume'],2));
+                $response['quoteVolume']=number_format(round($response['quoteVolume'],2),2);
             }
             $res .= "├24hr: \n";
             $res .= "┊├Price: " . $response['priceChange'] . "\n";
