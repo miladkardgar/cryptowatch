@@ -61,9 +61,9 @@ class startConverstation extends Conversation
     public function askTime()
     {
         $con = '';
-        foreach ($this->coins as $coin) {
-            $con .= $coin . "\n";
-        }
+//        foreach ($this->coins as $coin) {
+//            $con .= $coin . "\n";
+//        }
         $res = 'ارز ' . $this->bot->userStorage()->get('coins') . " به لیست اضافه گردید.";
         $res .= "\n\n".$con;
         $question = Question::create($res)
