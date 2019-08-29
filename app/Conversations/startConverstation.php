@@ -64,7 +64,7 @@ class startConverstation extends Conversation
         $res = 'ارز ' . $con . " به لیست اضافه گردید." . '\n';
         $question = Question::create($res)
             ->fallback('Unable to ask question')
-            ->callbackId('register_coin')->addButtons(
+            ->callbackId('time')->addButtons(
                 [
                     Button::create('افزودن ارز دیگر')->value('startUse'),
                     Button::create('مرحله بعد')->value('nextLevel'),
