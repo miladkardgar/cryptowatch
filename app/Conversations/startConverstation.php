@@ -13,6 +13,10 @@ class startConverstation extends Conversation
 
     public function start()
     {
+
+
+
+
         $question = Question::create("سلام \n به ربات کریپتو واتچ خوش آمدید.\n\n
         این ربات یه شما کمک میکند تغییرات ارز های دیجیتال را به راحتی مدیریت نمایید.")
             ->fallback('Unable to ask question')
@@ -25,6 +29,16 @@ class startConverstation extends Conversation
         $this->ask($question, function (Answer $answer) {
             if ($answer->isInteractiveMessageReply()) {
                 if ($answer->getValue() === 'startUse') {
+                    $user = $this->bot->getUser();
+                    $name = $user->getFirstName();
+                    $lastName = $user->getLastName();
+                    $username = $user->getUsername();
+                    $chatId = $user->getId();
+
+                    $connection = new \mysqli("localhost", "root", "68066806", "cryptowatch");
+                    if ($connection->connect_error)
+                        echo "Failed to connect to db: " . $connection->connect_error;
+                    $connection->query("INSERT INTO crypto_users (`name`,`last_name`,`chat_id`,`username`) VALUE (`$name`,`$lastName`,`$username`,`$chatId`)");
                     $this->askCoins();
                 } elseif ($answer->getValue() === 'moreInformation') {
                     $this->say(Inspiring::quote());
@@ -54,7 +68,7 @@ class startConverstation extends Conversation
     {
         $res = 'ارز ' . $this->bot->userStorage()->get('coins') . " به لیست اضافه گردید.";
         $this->say($res);
-            $this->askNextLevel();
+        $this->askNextLevel();
     }
 
     public function askNextLevel()
@@ -65,6 +79,9 @@ class startConverstation extends Conversation
         $res .= '(هر پنج دقیقه یک بار)' . "\n\n.";
         $this->ask($res, function (Answer $answer) {
             $res = 'اطلاعات ارز شما هر ' . $answer->getText() . ' دقیقه به اطلاع شما خواهد رسید.' . "\n\n";
+            $this->bot->userStorage()->save([
+                'time' => $answer->getText(),
+            ]);
             $this->say($res);
         });
     }
