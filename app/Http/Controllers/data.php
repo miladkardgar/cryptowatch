@@ -43,6 +43,8 @@ class data extends Controller
             $i=0;
             foreach ($response as $item) {
                 if($i<10) {
+                    $botman->say($item, env('TELEGRAM_CHANNEL'), TelegramDriver::class);
+
                     echo "<br>";
                     print_r($item);
                     $botman->say($item, env('TELEGRAM_CHANNEL'), TelegramDriver::class);
