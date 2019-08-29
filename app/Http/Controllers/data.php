@@ -52,6 +52,7 @@ class data extends Controller
                     $res .= "Volume: " . $value['volume'] . "\n";
                     $res .= "quoteVolume: " . $value['quoteVolume'] . "\n";
                     $res .= "count: " . $value['count'] . "\n";
+                    $res .= "\n\n @cryptowatch\n";
                     $res .= "---------------------------------\n\n";
                     print_r($res);
 
