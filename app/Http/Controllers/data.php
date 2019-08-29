@@ -50,7 +50,7 @@ class data extends Controller
                     foreach ($value as $sym => $val) {
                         $res = '';
                         $res .= "---------------------------------";
-                        $res .= "Symble: " . $sym['symbol'] . "\n\n";
+//                        $res .= "Symble: " . $sym['symbol'] . "\n\n";
                         $res .= "Price: " . $sym['priceChange'] . "\n";
                         $res .= "Price Percent: " . $sym['priceChangePercent'] . "\n";
                         $res .= "Volume: " . $sym['volume'] . "\n";
