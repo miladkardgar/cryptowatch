@@ -9,6 +9,7 @@ $botman = resolve('botman');
 
 $botman->hears('/start', function ($bot) {
     $user = $bot->getUser();
+    $bot->reply('Hello ' . $user);
     $bot->reply('Hello ' . $user->getFirstName() . ' ' . $user->getLastName());
     $bot->reply('Your username is: ' . $user->getUsername());
     $bot->reply('Your ID is: ' . $user->getId());
