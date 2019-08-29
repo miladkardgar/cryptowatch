@@ -49,7 +49,7 @@ class data extends Controller
             echo "cURL Error #:" . $err;
         } else {
             $botman = app('botman');
-            $botman->say('Hello!', env('TELEGRAM_CHANNEL'), TelegramDriver::class);
+            $botman->say($response, env('TELEGRAM_CHANNEL'), TelegramDriver::class);
             echo $response;
         }
     }
