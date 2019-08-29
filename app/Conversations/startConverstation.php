@@ -49,10 +49,13 @@ class startConverstation extends Conversation
         $question = Question::create($res)
             ->fallback('Unable to ask question')
             ->callbackId('register_coin');
-        $this->ask($question, function (Answer $answer) {
+        $this->ask($res, function (Answer $answer) {
             if ($answer->isInteractiveMessageReply()) {
+                $this->bot->userStorage()->save([
+                    'coins' => $answer->getText(),
+                ]);
+//                array_push($this->coins, $answer->getText());
                 $this->askTime();
-                array_push($this->coins, $answer->getText());
             }
         });
     }
