@@ -10,10 +10,7 @@ use BotMan\Drivers\Telegram\TelegramDriver;
 class data extends Controller
 {
 
-    public function __construct()
-    {
-        $this->getData();
-    }
+
 
     public function getData()
     {
@@ -112,9 +109,4 @@ class data extends Controller
 //        }
     }
 
-    public function run()
-    {
-        //
-        $this->getData();
-    }
 }
