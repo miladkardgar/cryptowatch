@@ -50,13 +50,11 @@ class startConverstation extends Conversation
             ->fallback('Unable to ask question')
             ->callbackId('register_coin');
         $this->ask($res, function (Answer $answer) {
-            if ($answer->isInteractiveMessageReply()) {
                 $this->bot->userStorage()->save([
                     'coins' => $answer->getText(),
                 ]);
 //                array_push($this->coins, $answer->getText());
                 $this->askTime();
-            }
         });
     }
 
