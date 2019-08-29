@@ -50,21 +50,21 @@ class startConverstation extends Conversation
             ->fallback('Unable to ask question')
             ->callbackId('register_coin');
         $this->ask($res, function (Answer $answer) {
-                $this->bot->userStorage()->save([
-                    'coins' => $answer->getText(),
-                ]);
-//                array_push($this->coins, $answer->getText());
-                $this->askTime();
+//                $this->bot->userStorage()->save([
+//                    'coins' => $answer->getText(),
+//                ]);
+            array_push($this->coins, $answer->getText());
+            $this->askTime();
         });
     }
 
     public function askTime()
     {
         $con = '';
-//        foreach ($this->coins as $coin) {
-//            $con .= $coin . "\n";
-//        }
-        $res = 'ارز ' . $con . " به لیست اضافه گردید." . '\n';
+        foreach ($this->coins as $coin) {
+            $con .= $coin . "\n";
+        }
+        $res = 'ارز ' . $con . " به لیست اضافه گردید.";
         $question = Question::create($res)
             ->fallback('Unable to ask question')
             ->callbackId('time')->addButtons(
