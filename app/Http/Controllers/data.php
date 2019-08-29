@@ -45,8 +45,8 @@ class data extends Controller
                 if ($i < 10) {
 //                    $botman->say($item, env('TELEGRAM_CHANNEL'), TelegramDriver::class);
 //                    print_r($value);
-                    foreach ($value as $val) {
-                        print_r($val);
+                    foreach ($value as $sym =>$val) {
+                        echo $sym."-".$val;
                         echo "<br>";
                     }
 //                        $res = '';
