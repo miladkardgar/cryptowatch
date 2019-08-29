@@ -70,7 +70,7 @@ class getData extends Command
                 $response['price']=number_format(round($response['price'],2),2);
             }
             $res .= "---------------------------------\n";
-            $res .= "┌💎: #" . $response['symbol'] . "\n";
+            $res .= "┌💎 #" . $response['symbol'] . "\n";
             $res .= "├price: " . $response['price'] . "\n";
             $i++;
         }
