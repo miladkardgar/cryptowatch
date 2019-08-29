@@ -14,9 +14,6 @@ class startConverstation extends Conversation
     public function start()
     {
 
-
-
-
         $question = Question::create("سلام \n به ربات کریپتو واتچ خوش آمدید.\n\n
         این ربات یه شما کمک میکند تغییرات ارز های دیجیتال را به راحتی مدیریت نمایید.")
             ->fallback('Unable to ask question')
