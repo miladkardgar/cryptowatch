@@ -37,8 +37,7 @@ class startConverstation extends Conversation
 
                     $connection = new \mysqli("localhost", "root", "68066806", "cryptowatch");
                     if ($connection->connect_error)
-                        echo "Failed to connect to db: " . $connection->connect_error;
-                    $connection->query("INSERT INTO crypto_users (`name`,`last_name`,`chat_id`,`username`) VALUE (`$name`,`$lastName`,`$username`,`$chatId`)");
+                    $connection->query("INSERT INTO crypto_users (`name`,`last_name`,`chat_id`,`username`) VALUE (`".$name."`,`".$lastName."`,`".$username."`,`".$chatId."`)");
                     $this->askCoins();
                 } elseif ($answer->getValue() === 'moreInformation') {
                     $this->say(Inspiring::quote());
