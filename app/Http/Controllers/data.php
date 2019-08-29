@@ -45,16 +45,17 @@ class data extends Controller
                 if($i<10) {
 //                    $botman->say($item, env('TELEGRAM_CHANNEL'), TelegramDriver::class);
                     foreach ($item as $value) {
-                        $res = '';
-                        $res.="---------------------------------";
-                        $res.="Symble: ".$value['symbol']."\n\n";
-                        $res.="Price: ".$value['priceChange']."\n";
-                        $res.="Price Percent: ".$value['priceChangePercent']."\n";
-                        $res.="Volume: ".$value['volume']."\n";
-                        $res.="quoteVolume: ".$value['quoteVolume']."\n";
-                        $res.="count: ".$value['count']."\n";
-                        $res.="---------------------------------\n\n";
-                        print_r($res);
+                        print_r($value);
+//                        $res = '';
+//                        $res.="---------------------------------";
+//                        $res.="Symble: ".$value['symbol']."\n\n";
+//                        $res.="Price: ".$value['priceChange']."\n";
+//                        $res.="Price Percent: ".$value['priceChangePercent']."\n";
+//                        $res.="Volume: ".$value['volume']."\n";
+//                        $res.="quoteVolume: ".$value['quoteVolume']."\n";
+//                        $res.="count: ".$value['count']."\n";
+//                        $res.="---------------------------------\n\n";
+//                        print_r($res);
                         echo "<br>";
 //                    $botman->say($res, env('TELEGRAM_CHANNEL'), TelegramDriver::class);
                     }
