@@ -38,7 +38,7 @@ class data extends Controller
         } else {
             $response = json_decode($response, true);
             $botman = app('botman');
-//            $botman->say("Data List:", env('TELEGRAM_CHANNEL'), TelegramDriver::class);
+            $botman->say("Data List:", env('TELEGRAM_CHANNEL'), TelegramDriver::class);
             $i = 0;
             foreach ($response as $item => $value) {
                 if ($i < 10) {
@@ -57,7 +57,7 @@ class data extends Controller
 
                     echo "<br>";
                     echo "<br>";
-//                    $botman->say($res, env('TELEGRAM_CHANNEL'), TelegramDriver::class);
+                    $botman->say($res, env('TELEGRAM_CHANNEL'), TelegramDriver::class);
 //                    sleep(2);
                 }
                 $i++;
