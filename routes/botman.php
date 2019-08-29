@@ -6,7 +6,7 @@ use App\Conversations\ExampleConversation;
 
 $botman = resolve('botman');
 
-$botman->hears('/start', 'App\Http\Controllers\ManageController@start');
+$botman->hears('/start', ManageController::class.'@start');
 $botman->hears('/setting', ManageController::class . '@setting');
 
 

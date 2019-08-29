@@ -11,7 +11,6 @@ use Illuminate\Foundation\Inspiring;
 class startConverstation extends Conversation
 {
 
-
     public function start()
     {
         $question = Question::create("سلام \n\n به ربات کریپتو واتچ خوش آمدید.\n\n\n
