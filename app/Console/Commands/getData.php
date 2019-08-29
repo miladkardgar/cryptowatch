@@ -130,8 +130,8 @@ class getData extends Command
             $res .= "┊├Volume: " . $response['volume'] . "\n";
             $res .= "┊├quoteVolume: " . $response['quoteVolume'] . "\n";
             $res .= "┊├count: " . $response['count'] . "\n";
-            $res .= "\n\n @cryptoowatch \n";
-            $res .= "---------------------------------\n\n";
+            $res .= "---------------------------------\n";
+            $res .= "\n\n @cryptoowatch \n\n";
             $i++;
         }
         if($i==3) {
