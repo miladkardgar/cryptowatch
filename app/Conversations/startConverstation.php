@@ -65,7 +65,7 @@ class startConverstation extends Conversation
             $con .= $coin . "\n";
         }
         $res = 'ارز ' . $this->bot->userStorage()->get('coins') . " به لیست اضافه گردید.";
-        $res .= $con;
+        $res .= '\n\n'.$con;
         $question = Question::create($res)
             ->fallback('Unable to ask question')
             ->callbackId('time')->addButtons(
