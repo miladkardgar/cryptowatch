@@ -32,6 +32,8 @@ class startConverstation extends Conversation
                     $this->askCoins();
                 } elseif ($answer->getValue() === 'moreInformation') {
                     $this->say(Inspiring::quote());
+                }else{
+                    $this->askCoins();
                 }
             }
         });
