@@ -28,9 +28,9 @@ class startConverstation extends Conversation
                 if ($answer->getValue() === 'startUse') {
                     $user = $this->bot->getUser();
                     $res = $user->getFirstName() . ' ' . $user->getLastName() . "\n وقت بخیر \n";
-                    $res .= 'نام کاربری شما:  \n' . $user->getUsername();
-                    $res .= '\n لطفاً نام ارز مورد نظر را وارد نمایید.';
-                    $res .= '\n مثال: BTCUSDT';
+                    $res .= 'نام کاربری شما: ' .'\n'. $user->getUsername()."\n";
+                    $res .= 'لطفاً نام ارز مورد نظر را وارد نمایید.'."\n";
+                    $res .= ' مثال: BTCUSDT'."\n";
 //                    cryptoUser::create(
 //                        [
 //                            'chat_id' => $user->getId(),
@@ -51,10 +51,9 @@ class startConverstation extends Conversation
                     return $this->ask($question, function (Answer $answer) {
                         if ($answer->isInteractiveMessageReply()) {
                             if ($answer->getValue() === 'addCoin') {
-
-
+                                $this->say(Inspiring::quote());
                             }elseif ($answer->getValue()==='nextLevel'){
-
+                                $this->say(Inspiring::quote());
                             }
                         }
                     });
