@@ -40,7 +40,31 @@ class data extends Controller
         if ($err) {
             echo "cURL Error #:" . $err;
         } else {
-            echo $response;
+            $response = json_decode($response, true);
+            $botman = app('botman');
+//            $botman->say("Data List:", env('TELEGRAM_CHANNEL'), TelegramDriver::class);
+            $i = 0;
+            print_r($response);
+//            foreach ($response as $item => $value) {
+////                    $botman->say($item, env('TELEGRAM_CHANNEL'), TelegramDriver::class);
+////                    print_r($value);
+//                $res = '';
+//                $res .= "---------------------------------\n";
+//                $res .= "Symble: " . $value['symbol'] . "\n\n";
+//                $res .= "Price: " . $value['priceChange'] . "\n";
+//                $res .= "Price Percent: " . $value['priceChangePercent'] . "\n";
+//                $res .= "Volume: " . $value['volume'] . "\n";
+//                $res .= "quoteVolume: " . $value['quoteVolume'] . "\n";
+//                $res .= "count: " . $value['count'] . "\n";
+//                $res .= "\n\n @cryptoowatch \n";
+//                $res .= "---------------------------------\n\n";
+////                    $botman->say($res, env('TELEGRAM_CHANNEL'), TelegramDriver::class);
+////                    sleep(2);
+//                print_r($res);
+//                echo "<br>";
+//                echo "<br>";
+//                $i++;
+//            }
         }
 
         die;
