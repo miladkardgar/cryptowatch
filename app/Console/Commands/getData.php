@@ -97,14 +97,14 @@ class getData extends Command
         if ($err) {
             echo "cURL Error #:" . $err;
         } else {
-            $response = json_decode($response, true);
+            $response2 = json_decode($response, true);
 
-            if($response['price']>1){
-                $response['price']=number_format(round($response['price'],2),2);
+            if($response2['price']>1){
+                $response2['price']=number_format(round($response2['price'],2),2);
             }
             $res .= "├AVGPrice: \n";
-            $res .= "┊├minutes: " . $response['mins'] . "\n";
-            $res .= "┊├Price: " . $response['price'] . "\n";
+            $res .= "┊├minutes: " . $response2['mins'] . "\n";
+            $res .= "┊├Price: " . $response2['price'] . "\n";
             $i++;
         }
 
@@ -130,22 +130,21 @@ class getData extends Command
         if ($err) {
             echo "cURL Error #:" . $err;
         } else {
-            $response = json_decode($response, true);
-
-            if($response['priceChange']>1){
-                $response['priceChange']=number_format(round($response['priceChange'],2),2);
+            $response3 = json_decode($response, true);
+            if($response3['priceChange']>1){
+                $response3['priceChange']=number_format(round($response3['priceChange'],2),2);
             }
-            if($response['volume']>1){
-                $response['volume']=number_format(round($response['volume'],2),2);
-            }if($response['quoteVolume']>1){
-                $response['quoteVolume']=number_format(round($response['quoteVolume'],2),2);
+            if($response3['volume']>1){
+                $response3['volume']=number_format(round($response3['volume'],2),2);
+            }if($response3['quoteVolume']>1){
+                $response3['quoteVolume']=number_format(round($response3['quoteVolume'],2),2);
             }
             $res .= "├24hr: \n";
-            $res .= "┊├Price: " . $response['priceChange'] . "\n";
-            $res .= "┊├Price Percent: " . $response['priceChangePercent'] . "\n";
-            $res .= "┊├Volume: " . $response['volume'] . "\n";
-            $res .= "┊├quoteVolume: " . $response['quoteVolume'] . "\n";
-            $res .= "┊├count: " . $response['count'] . "\n";
+            $res .= "┊├Price: " . $response3['priceChange'] . "\n";
+            $res .= "┊├Price Percent: " . $response3['priceChangePercent'] . "\n";
+            $res .= "┊├Volume: " . $response3['volume'] . "\n";
+            $res .= "┊├quoteVolume: " . $response3['quoteVolume'] . "\n";
+            $res .= "┊├count: " . $response3['count'] . "\n";
             $res .= "---------------------------------\n";
             $res .= "\n\n @cryptoowatch \n\n";
             $i++;
