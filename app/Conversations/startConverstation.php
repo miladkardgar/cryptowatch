@@ -77,6 +77,8 @@ class startConverstation extends Conversation
             if ($answer->isInteractiveMessageReply()) {
                 if ($answer->getValue() === 'nextLevel') {
                     $this->askNextLevel();
+                } elseif ($answer->getValue() === "startUse") {
+                    $this->askCoins();
                 }
             }
         });
