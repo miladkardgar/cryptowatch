@@ -12,26 +12,19 @@ class data extends Controller
 
     public function getData()
     {
-
-
-
         $curl = curl_init();
 
         curl_setopt_array($curl, array(
-            CURLOPT_URL => "https://api.binance.com/api/v1/ticker/24hr?symbol=LTCBTC",
+            CURLOPT_URL => "https://dex.binance.org/api/v1/ticker/24hr",
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_ENCODING => "",
             CURLOPT_MAXREDIRS => 10,
             CURLOPT_TIMEOUT => 30,
             CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
             CURLOPT_CUSTOMREQUEST => "GET",
-            CURLOPT_POSTFIELDS => "------WebKitFormBoundary7MA4YWxkTrZu0gW\r\nContent-Disposition: form-data; name=\"symbol=LTCBTC&side=BUY&type=LIMIT&timeInForce=GTC&quantity=1&price=0.1&recvWindow=5000&timestamp=1499827319559\"\r\n\r\n\r\n------WebKitFormBoundary7MA4YWxkTrZu0gW--",
             CURLOPT_HTTPHEADER => array(
-                "apikey: vmPUZE6mv9SD5VNHk4HlWFsOr6aKE2zvsw0MuIgwCIPy6utIco14y7Ju91duEh8A",
                 "cache-control: no-cache",
-                "content-type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW",
-                "postman-token: 89086315-fd8b-8320-275d-c4cbad09b761",
-                "secretkey: NhqPtmdSJYdKjVHjA7PZj4Mge3R5YNiP1e3UZjInClVN65XAbvqqM6A7H5fATj0j"
+                "postman-token: 52a99a09-6f4e-aeee-483c-3e07d9c05bd3"
             ),
         ));
 
@@ -44,9 +37,8 @@ class data extends Controller
             echo "cURL Error #:" . $err;
         } else {
             $botman = app('botman');
-            $botman->say($response, env('TELEGRAM_CHANNEL'), TelegramDriver::class);
+//            $botman->say($response, env('TELEGRAM_CHANNEL'), TelegramDriver::class);
             echo $response;
         }
-
     }
 }
