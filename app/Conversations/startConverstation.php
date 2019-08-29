@@ -14,7 +14,7 @@ class startConverstation extends Conversation
 
     public function start()
     {
-        $question = Question::create("سلام \n\n به ربات کریپتو واتچ خوش آمدید.\n\n\n
+        $question = Question::create("سلام \n به ربات کریپتو واتچ خوش آمدید.\n\n
         این ربات یه شما کمک میکند تغییرات ارز های دیجیتال را به راحتی مدیریت نمایید.")
             ->fallback('Unable to ask question')
             ->callbackId('start')
@@ -29,14 +29,36 @@ class startConverstation extends Conversation
                     $user = $this->bot->getUser();
                     $res = $user->getFirstName() . ' ' . $user->getLastName() . "\n وقت بخیر \n";
                     $res .= 'نام کاربری شما:  \n' . $user->getUsername();
-                    cryptoUser::create(
-                        [
-                            'chat_id' => $user->getId(),
-                            'name' => $user->getFirstName(),
-                            'last_name' => $user->getLastName(),
-                            'username' => $user->getUsername(),
-                        ]
-                    );
+                    $res .= '\n لطفاً نام ارز مورد نظر را وارد نمایید.';
+                    $res .= '\n مثال: BTCUSDT';
+//                    cryptoUser::create(
+//                        [
+//                            'chat_id' => $user->getId(),
+//                            'name' => $user->getFirstName(),
+//                            'last_name' => $user->getLastName(),
+//                            'username' => $user->getUsername(),
+//                        ]
+//                    );
+
+                    $question = Question::create($res)
+                        ->fallback('Unable to ask question')
+                        ->callbackId('start')
+                        ->addButtons([
+                            Button::create('افزودن ارز دیگر')->value('addCoin'),
+                            Button::create('مرحله بعد')->value('nextLevel'),
+                        ]);
+
+                    return $this->ask($question, function (Answer $answer) {
+                        if ($answer->isInteractiveMessageReply()) {
+                            if ($answer->getValue() === 'addCoin') {
+
+
+                            }elseif ($answer->getValue()==='nextLevel'){
+
+                            }
+                        }
+                    });
+
                     $this->say($res);
                 } elseif ($answer->getValue() === 'moreInformation') {
                     $this->say(Inspiring::quote());
