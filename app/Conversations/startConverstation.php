@@ -29,14 +29,14 @@ class startConverstation extends Conversation
                     $user = $this->bot->getUser();
                     $res = $user->getFirstName() . ' ' . $user->getLastName() . " وقت بخیر\n";
                     $res .= 'نام کاربری شما:  ' . $user->getUsername();
-//                    User::create(
-//                        [
-//                            'chat_id' => $user->getId(),
-//                            'name' => $user->getFirstName(),
-//                            'last_name' => $user->getLastName(),
-//                            'username' => $user->getUsername(),
-//                        ]
-//                    );
+                    User::create(
+                        [
+                            'chat_id' => $user->getId(),
+                            'name' => $user->getFirstName(),
+                            'last_name' => $user->getLastName(),
+                            'username' => $user->getUsername(),
+                        ]
+                    );
                     $this->say($res);
                 } elseif ($answer->getValue() === 'moreInformation') {
                     $this->say(Inspiring::quote());
