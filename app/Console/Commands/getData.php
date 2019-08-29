@@ -98,6 +98,10 @@ class getData extends Command
             echo "cURL Error #:" . $err;
         } else {
             $response = json_decode($response, true);
+
+            if($response['price']>1){
+                $response['price']=number_format(round($response['price'],2));
+            }
             $res .= "├AVGPrice: \n";
             $res .= "┊├minutes: " . $response['mins'] . "\n";
             $res .= "┊├Price: " . $response['price'] . "\n";
@@ -127,6 +131,15 @@ class getData extends Command
             echo "cURL Error #:" . $err;
         } else {
             $response = json_decode($response, true);
+
+            if($response['priceChange']>1){
+                $response['priceChange']=number_format(round($response['priceChange'],2));
+            }
+            if($response['volume']>1){
+                $response['volume']=number_format(round($response['volume'],2));
+            }if($response['quoteVolume']>1){
+                $response['quoteVolume']=number_format(round($response['quoteVolume'],2));
+            }
             $res .= "├24hr: \n";
             $res .= "┊├Price: " . $response['priceChange'] . "\n";
             $res .= "┊├Price Percent: " . $response['priceChangePercent'] . "\n";
