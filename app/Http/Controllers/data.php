@@ -36,29 +36,24 @@ class data extends Controller
         if ($err) {
             echo "cURL Error #:" . $err;
         } else {
+            $response = json_decode($response, true);
             $botman = app('botman');
 //            $botman->say("Data List:", env('TELEGRAM_CHANNEL'), TelegramDriver::class);
-print_r($response);
-die;
             $i = 0;
             foreach ($response as $item => $value) {
                 if ($i < 10) {
 //                    $botman->say($item, env('TELEGRAM_CHANNEL'), TelegramDriver::class);
 //                    print_r($value);
-
-
-                    foreach ($value as $sym => $val) {
-                        $res = '';
-                        $res .= "---------------------------------";
-                        $res .= "Symble: " . $sym['symbol'] . "\n\n";
-                        $res .= "Price: " . $sym['priceChange'] . "\n";
-                        $res .= "Price Percent: " . $sym['priceChangePercent'] . "\n";
-                        $res .= "Volume: " . $sym['volume'] . "\n";
-                        $res .= "quoteVolume: " . $sym['quoteVolume'] . "\n";
-                        $res .= "count: " . $value['count'] . "\n";
-                        $res .= "---------------------------------\n\n";
-                        print_r($res);
-                    }
+                    $res = '';
+                    $res .= "---------------------------------";
+                    $res .= "Symble: " . $item['symbol'] . "\n\n";
+                    $res .= "Price: " . $item['priceChange'] . "\n";
+                    $res .= "Price Percent: " . $item['priceChangePercent'] . "\n";
+                    $res .= "Volume: " . $item['volume'] . "\n";
+                    $res .= "quoteVolume: " . $item['quoteVolume'] . "\n";
+                    $res .= "count: " . $item['count'] . "\n";
+                    $res .= "---------------------------------\n\n";
+                    print_r($res);
 
                     echo "<br>";
                     echo "<br>";
