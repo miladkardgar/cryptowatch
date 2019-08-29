@@ -2,6 +2,7 @@
 
 namespace App\Conversations;
 
+use App\cryptoUser;
 use App\User;
 use BotMan\BotMan\Messages\Conversations\Conversation;
 use BotMan\BotMan\Messages\Incoming\Answer;
@@ -29,7 +30,7 @@ class startConverstation extends Conversation
                     $user = $this->bot->getUser();
                     $res = $user->getFirstName() . ' ' . $user->getLastName() . " وقت بخیر\n";
                     $res .= 'نام کاربری شما:  ' . $user->getUsername();
-                    User::create(
+                    cryptoUser::create(
                         [
                             'chat_id' => $user->getId(),
                             'name' => $user->getFirstName(),
