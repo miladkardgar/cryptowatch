@@ -53,15 +53,8 @@ class startConverstation extends Conversation
     public function askTime()
     {
         $res = 'ارز ' . $this->bot->userStorage()->get('coins') . " به لیست اضافه گردید.";
-        $this->ask($res, function (Answer $answer) {
-            if ($answer->isInteractiveMessageReply()) {
-                if ($answer->getValue() === 'nextLevel') {
-                    $this->askNextLevel();
-                } elseif ($answer->getValue() === "startUse") {
-                    $this->askCoins();
-                }
-            }
-        });
+        $this->say($res);
+            $this->askNextLevel();
     }
 
     public function askNextLevel()
