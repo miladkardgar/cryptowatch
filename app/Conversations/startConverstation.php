@@ -50,7 +50,7 @@ class startConverstation extends Conversation
         return $this->ask($question, function (Answer $answer) {
             if ($answer->isInteractiveMessageReply()) {
                 array_push($this->coins, $answer->getText());
-
+                $this->askTime();
             }
         });
     }
