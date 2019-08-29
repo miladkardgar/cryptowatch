@@ -3,10 +3,21 @@
 namespace App\Http\Controllers;
 
 use BotMan\BotMan\BotMan;
+use BotMan\BotMan\BotManFactory;
+use BotMan\Drivers\Telegram\TelegramDriver;
 use Illuminate\Http\Request;
+use App\Conversations\ExampleConversation;
+
 
 class data extends Controller
 {
+
+    public function handle()
+    {
+        $botman = app('botman');
+
+        $botman->listen();
+    }
     //
     public function getData()
     {
@@ -39,7 +50,8 @@ class data extends Controller
         if ($err) {
             echo "cURL Error #:" . $err;
         } else {
-            $botman->say('test',env('TELEGRAM_CHANNEL'));
+            $botman = new BotManFactory();
+            $botman->say('Hello!', env('TELEGRAM_CHANNEL'), TelegramDriver::class);
             echo $response;
         }
     }
