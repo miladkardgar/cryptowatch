@@ -53,7 +53,7 @@ class startConverstation extends Conversation
             $this->bot->userStorage()->save([
                 'coins' => $answer->getText(),
             ]);
-            array_push($this->coins,$answer->getText());
+            $this->coins[]=$answer->getText();
             $this->askTime();
         });
     }
