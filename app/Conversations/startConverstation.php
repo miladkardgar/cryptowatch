@@ -8,6 +8,7 @@ use BotMan\BotMan\Messages\Incoming\Answer;
 use BotMan\BotMan\Messages\Outgoing\Actions\Button;
 use BotMan\BotMan\Messages\Outgoing\Question;
 use Illuminate\Foundation\Inspiring;
+use Illuminate\Notifications\Action;
 
 class startConverstation extends Conversation
 {
@@ -27,10 +28,12 @@ class startConverstation extends Conversation
             if ($answer->isInteractiveMessageReply()) {
                 if ($answer->getValue() === 'startUse') {
                     $user = $this->bot->getUser();
-                    $res = $user->getFirstName() . ' ' . $user->getLastName() . "\n وقت بخیر \n";
-                    $res .= 'نام کاربری شما: ' .'\n'. $user->getUsername()."\n";
-                    $res .= 'لطفاً نام ارز مورد نظر را وارد نمایید.'."\n";
-                    $res .= ' مثال: BTCUSDT'."\n";
+                    $res = $user->getFirstName() . ' ' . $user->getLastName() . "\n وقت بخیر \n" . "\n";
+                    if ($user->getUsername() != "") {
+                        $res .= 'نام کاربری شما: ' . $user->getUsername() . "\n";
+                    }
+                    $res .= 'لطفاً نام ارز مورد نظر را وارد نمایید.' . "\n";
+                    $res .= ' مثال: BTCUSDT' . "\n\n";
 //                    cryptoUser::create(
 //                        [
 //                            'chat_id' => $user->getId(),
@@ -51,9 +54,13 @@ class startConverstation extends Conversation
                     return $this->ask($question, function (Answer $answer) {
                         if ($answer->isInteractiveMessageReply()) {
                             if ($answer->getValue() === 'addCoin') {
-                                $this->say(Inspiring::quote());
-                            }elseif ($answer->getValue()==='nextLevel'){
-                                $this->say(Inspiring::quote());
+                                $this->say($answer->getText());
+                            } elseif ($answer->getValue() === 'nextLevel') {
+                                $res = 'لطفاً زمان بندی اطلاع رسانی را وارد نمایید.'."\n\n";
+                                $res .= 'زمان را بر اساس دقیقه وارد نمایید.'."\n";
+                                $res .= 'مثال: 5'."\n";
+                                $res .= 'هر پنج دقیقه یک بار'."\n\n";
+                                $this->say($answer->getText());
                             }
                         }
                     });
