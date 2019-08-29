@@ -6,7 +6,7 @@ $botman = resolve('botman');
 
 
 
-$botman->hears('/start', ManageController::class.'@start');
+$botman->hears('/start', 'App\Http\Controllers\ManageController@start');
 $botman->hears('/setting', ManageController::class.'@setting');
 
 
