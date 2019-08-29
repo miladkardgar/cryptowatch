@@ -40,6 +40,7 @@ class data extends Controller
             $botman = app('botman');
             $botman->say("Data List:", env('TELEGRAM_CHANNEL'), TelegramDriver::class);
             $i = 0;
+            print_r($response);
             foreach ($response as $item => $value) {
                 if ($i < 2) {
 //                    $botman->say($item, env('TELEGRAM_CHANNEL'), TelegramDriver::class);
