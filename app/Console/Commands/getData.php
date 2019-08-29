@@ -66,6 +66,9 @@ class getData extends Command
             echo "cURL Error #:" . $err;
         } else {
             $response = json_decode($response, true);
+            if($response['price']>1){
+                $response['price']=number_format(round($response['price'],2));
+            }
             $res .= "---------------------------------\n";
             $res .= "┌💎: #" . $response['symbol'] . "\n";
             $res .= "├price: " . $response['price'] . "\n";
