@@ -38,6 +38,7 @@ class data extends Controller
         } else {
             $response = json_decode($response,true);
             foreach ($response as $item) {
+                echo "<br>";
                 print_r($item);
             }
             $botman = app('botman');
