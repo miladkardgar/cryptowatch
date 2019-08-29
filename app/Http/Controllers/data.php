@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use BotMan\BotMan\BotMan;
 use Illuminate\Http\Request;
 
 class data extends Controller
@@ -38,6 +39,7 @@ class data extends Controller
         if ($err) {
             echo "cURL Error #:" . $err;
         } else {
+            $botman->say('test',env('TELEGRAM_CHANNEL'));
             echo $response;
         }
     }
