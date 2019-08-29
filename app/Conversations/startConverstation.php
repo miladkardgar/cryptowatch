@@ -11,7 +11,6 @@ use Illuminate\Foundation\Inspiring;
 class startConverstation extends Conversation
 {
 
-
     public function start()
     {
         $question = Question::create("سلام \n به ربات کریپتو واتچ خوش آمدید.\n\n
@@ -43,10 +42,7 @@ class startConverstation extends Conversation
         $res .= "وقت بخیر" . "\n\n";
         $res .= 'لطفاً نام ارز مورد نظر را وارد نمایید.' . "\n";
         $res .= ' مثال: BTCUSDT' . "\n\n";
-        $question = Question::create($res)
-            ->fallback('Unable to ask question')
-            ->callbackId('register_coin');
-        $this->ask($question, function (Answer $answer) {
+        $this->ask($res, function (Answer $answer) {
             $this->bot->userStorage()->save([
                 'coins' => $answer->getText(),
             ]);
@@ -57,15 +53,7 @@ class startConverstation extends Conversation
     public function askTime()
     {
         $res = 'ارز ' . $this->bot->userStorage()->get('coins') . " به لیست اضافه گردید.";
-        $question = Question::create($res)
-            ->fallback('Unable to ask question')
-            ->callbackId('time')->addButtons(
-                [
-                    Button::create('افزودن ارز دیگر')->value('startUse'),
-                    Button::create('مرحله بعد')->value('nextLevel'),
-                ]
-            );
-        return $this->ask($question, function (Answer $answer) {
+        $this->ask($res, function (Answer $answer) {
             if ($answer->isInteractiveMessageReply()) {
                 if ($answer->getValue() === 'nextLevel') {
                     $this->askNextLevel();
@@ -82,10 +70,7 @@ class startConverstation extends Conversation
         $res .= 'زمان را بر اساس دقیقه وارد نمایید.' . "\n";
         $res .= 'مثال: 5' . "\n\n";
         $res .= '(هر پنج دقیقه یک بار)' . "\n\n.";
-        $question = Question::create($res)
-            ->fallback('Unable to ask question')
-            ->callbackId('register_next');
-        return $this->ask($question, function (Answer $answer) {
+        $this->ask($res, function (Answer $answer) {
             $res = 'اطلاعات ارز شما هر ' . $answer->getText() . ' دقیقه به اطلاع شما خواهد رسید.' . "\n\n";
             $this->say($res);
         });
