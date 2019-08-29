@@ -38,13 +38,13 @@ class data extends Controller
         } else {
             $response = json_decode($response, true);
             $botman = app('botman');
-
             $i=0;
             foreach ($response as $item) {
                 if($i<10) {
                     echo "<br>";
                     print_r($item);
                     $botman->say($item, env('TELEGRAM_CHANNEL'), TelegramDriver::class);
+                    sleep(2);
                 }
                 $i++;
             }
