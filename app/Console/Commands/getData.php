@@ -67,7 +67,7 @@ class getData extends Command
         } else {
             $response = json_decode($response, true);
             $res .= "---------------------------------\n";
-            $res .= "┌Symbol: #" . $response['symbol'] . "\n";
+            $res .= "┌💎: #" . $response['symbol'] . "\n";
             $res .= "├price: " . $response['price'] . "\n";
             $i++;
         }
