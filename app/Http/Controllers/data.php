@@ -45,26 +45,24 @@ class data extends Controller
 //            $botman->say("Data List:", env('TELEGRAM_CHANNEL'), TelegramDriver::class);
             $i = 0;
 //            print_r($response);
-            foreach ($response as $item => $value) {
 //                    $botman->say($item, env('TELEGRAM_CHANNEL'), TelegramDriver::class);
 //                    echo $item;
-                $res = '';
-                $res .= "---------------------------------\n";
-                $res .= "Symble: " . $response['symbol'] . "\n\n";
-                $res .= "Price: " . $response['priceChange'] . "\n";
-                $res .= "Price Percent: " . $response['priceChangePercent'] . "\n";
-                $res .= "Volume: " . $response['volume'] . "\n";
-                $res .= "quoteVolume: " . $response['quoteVolume'] . "\n";
-                $res .= "count: " . $response['count'] . "\n";
-                $res .= "\n\n @cryptoowatch \n";
-                $res .= "---------------------------------\n\n";
+            $res = '';
+            $res .= "---------------------------------\n";
+            $res .= "Symble: " . $response['symbol'] . "\n\n";
+            $res .= "Price: " . $response['priceChange'] . "\n";
+            $res .= "Price Percent: " . $response['priceChangePercent'] . "\n";
+            $res .= "Volume: " . $response['volume'] . "\n";
+            $res .= "quoteVolume: " . $response['quoteVolume'] . "\n";
+            $res .= "count: " . $response['count'] . "\n";
+            $res .= "\n\n @cryptoowatch \n";
+            $res .= "---------------------------------\n\n";
 ////                    $botman->say($res, env('TELEGRAM_CHANNEL'), TelegramDriver::class);
 ////                    sleep(2);
-                print_r($res);
+            print_r($res);
 //                echo "<br>";
 //                echo "<br>";
 //                $i++;
-            }
         }
 
         die;
