@@ -41,7 +41,7 @@ class data extends Controller
             $botman->say("Data List:", env('TELEGRAM_CHANNEL'), TelegramDriver::class);
             $i = 0;
             foreach ($response as $item => $value) {
-                if ($i < 10) {
+                if ($i < 2) {
 //                    $botman->say($item, env('TELEGRAM_CHANNEL'), TelegramDriver::class);
 //                    print_r($value);
                     $res = '';
@@ -52,15 +52,14 @@ class data extends Controller
                     $res .= "Volume: " . $value['volume'] . "\n";
                     $res .= "quoteVolume: " . $value['quoteVolume'] . "\n";
                     $res .= "count: " . $value['count'] . "\n";
-                    $res .= "\n\n @cryptowatch \n";
+                    $res .= "\n\n @cryptoowatch \n";
                     $res .= "---------------------------------\n\n";
-                    print_r($res);
-
-                    echo "<br>";
-                    echo "<br>";
                     $botman->say($res, env('TELEGRAM_CHANNEL'), TelegramDriver::class);
 //                    sleep(2);
                 }
+                print_r($value);
+                echo "<br>";
+                echo "<br>";
                 $i++;
             }
 
