@@ -26,7 +26,7 @@ class startConverstation extends Conversation
         return $this->ask($question, function (Answer $answer) {
             if ($answer->isInteractiveMessageReply()) {
                 if ($answer->getValue() === 'startUse') {
-                    $user = $this->getUser();
+                    $user = $this->bot->getUser();
                     $res = $user->getFirstName() . ' ' . $user->getLastName() . " وقت بخیر\n";
                     $res .= 'نام کاربری شما:  ' . $user->getUsername();
 //                    User::create(
