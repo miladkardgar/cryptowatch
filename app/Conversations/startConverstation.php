@@ -28,7 +28,7 @@ class startConverstation extends Conversation
             if ($answer->isInteractiveMessageReply()) {
                 if ($answer->getValue() === 'startUse') {
                     $user = $this->bot->getUser();
-                    $res = $user->getFirstName() . ' ' . $user->getLastName() . "\n وقت بخیر \n" . "\n";
+                    $res = $user->getFirstName() . ' ' . $user->getLastName() . '\n' . "وقت بخیر" . "\n";
                     if ($user->getUsername() != "") {
                         $res .= 'نام کاربری شما: ' . $user->getUsername() . "\n";
                     }
@@ -45,33 +45,51 @@ class startConverstation extends Conversation
 
                     $question = Question::create($res)
                         ->fallback('Unable to ask question')
-                        ->callbackId('start')
-                        ->addButtons([
-                            Button::create('افزودن ارز دیگر')->value('addCoin'),
-                            Button::create('مرحله بعد')->value('nextLevel'),
-                        ]);
+                        ->callbackId('register_coin');
 
                     return $this->ask($question, function (Answer $answer) {
                         if ($answer->isInteractiveMessageReply()) {
-                            if ($answer->getValue() === 'addCoin') {
-                                $this->say($answer->getText());
-                            } elseif ($answer->getValue() === 'nextLevel') {
-                                $res = 'لطفاً زمان بندی اطلاع رسانی را وارد نمایید.'."\n\n";
-                                $res .= 'زمان را بر اساس دقیقه وارد نمایید.'."\n";
-                                $res .= 'مثال: 5'."\n";
-                                $res .= 'هر پنج دقیقه یک بار'."\n\n";
-                                $this->say($answer->getText());
-                            }
+                            $res = 'ارز ' . $answer->getText() . "برای به لیست اضافه گردید." . '\n';
+                            $question = Question::create($res)
+                                ->fallback('Unable to ask question')
+                                ->callbackId('register_coin')->addButtons(
+                                    [
+                                        Button::create('افزودن ارز دیگر')->value('startUse'),
+                                        Button::create('مرحله بعد')->value('nextLevel'),
+                                    ]
+                                );
+                            return $this->ask($question, function (Answer $answer) {
+                                if ($answer->isInteractiveMessageReply()) {
+                                    if ($answer->getValue() === 'nextLevel') {
+                                        $res = 'لطفاً زمان بندی اطلاع رسانی را وارد نمایید.' . "\n\n";
+                                        $res .= 'زمان را بر اساس دقیقه وارد نمایید.' . "\n";
+                                        $res .= 'مثال: 5' . "\n";
+                                        $res .= 'هر پنج دقیقه یک بار' . "\n\n";
+                                        $question = Question::create($res)
+                                            ->fallback('Unable to ask question')
+                                            ->callbackId('register_next')->addButtons(
+                                                [
+                                                    Button::create('افزودن ارز دیگر')->value('startUse'),
+                                                    Button::create('مرحله بعد')->value('nextLevel'),
+                                                ]
+                                            );
+
+                                        return $this->ask($question, function (Answer $answer) {
+                                            if ($answer->isInteractiveMessageReply()) {
+                                                $res = 'اطلاعات ارز شما هر ' . $answer->getText() . ' دقیقه به اطلاع شما خواهد رسید.' . "\n\n";
+                                                $this->say($res);
+                                            }
+                                        });
+                                    }
+                                }
+                            });
                         }
                     });
-
-                    $this->say($res);
                 } elseif ($answer->getValue() === 'moreInformation') {
                     $this->say(Inspiring::quote());
                 }
             }
         });
-
     }
 
     /**
