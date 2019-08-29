@@ -3,7 +3,6 @@
 namespace App\Conversations;
 
 use App\cryptoUser;
-use App\User;
 use BotMan\BotMan\Messages\Conversations\Conversation;
 use BotMan\BotMan\Messages\Incoming\Answer;
 use BotMan\BotMan\Messages\Outgoing\Actions\Button;
@@ -28,8 +27,8 @@ class startConverstation extends Conversation
             if ($answer->isInteractiveMessageReply()) {
                 if ($answer->getValue() === 'startUse') {
                     $user = $this->bot->getUser();
-                    $res = $user->getFirstName() . ' ' . $user->getLastName() . " وقت بخیر\n";
-                    $res .= 'نام کاربری شما:  ' . $user->getUsername();
+                    $res = $user->getFirstName() . ' ' . $user->getLastName() . "\n وقت بخیر \n";
+                    $res .= 'نام کاربری شما:  \n' . $user->getUsername();
                     cryptoUser::create(
                         [
                             'chat_id' => $user->getId(),
