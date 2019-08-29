@@ -9,7 +9,6 @@ $botman = resolve('botman');
 $botman->hears('/start', ManageController::class.'@start');
 $botman->hears('/setting', ManageController::class . '@setting');
 
-
 $botman->hears('Hi', function ($bot) {
     $bot->reply('Hello!');
 });

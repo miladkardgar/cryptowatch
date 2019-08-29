@@ -26,14 +26,14 @@ class startConverstation extends Conversation
                 Button::create('اطلاعات بیشتر')->value('moreInformation'),
             ]);
 
-        return $this->ask($question, function (Answer $answer) {
+        $this->ask($question, function (Answer $answer) {
             if ($answer->isInteractiveMessageReply()) {
                 if ($answer->getValue() === 'startUse') {
                     $this->askCoins();
                 } elseif ($answer->getValue() === 'moreInformation') {
                     $this->say(Inspiring::quote());
                 }
-            }else{
+            } else {
                 $this->askCoins();
             }
         });
@@ -49,7 +49,7 @@ class startConverstation extends Conversation
         $question = Question::create($res)
             ->fallback('Unable to ask question')
             ->callbackId('register_coin');
-        return $this->ask($question, function (Answer $answer) {
+        $this->ask($question, function (Answer $answer) {
             if ($answer->isInteractiveMessageReply()) {
                 $this->askTime();
                 array_push($this->coins, $answer->getText());
