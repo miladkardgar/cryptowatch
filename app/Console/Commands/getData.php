@@ -42,7 +42,7 @@ class getData extends Command
 
         $botman = app('botman');
         $res = '';
-
+        $i = 0;
         $curl = curl_init();
         curl_setopt_array($curl, array(
             CURLOPT_URL => "https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT",
@@ -67,8 +67,9 @@ class getData extends Command
         } else {
             $response = json_decode($response, true);
             $res .= "---------------------------------\n";
-            $res .= "┌Symble: #" . $response['symbol'] . "\n\n";
+            $res .= "┌Symble: #" . $response['symbol'] . "\n";
             $res .= "├price: " . $response['price'] . "\n";
+            $i++;
         }
 
         $curl = curl_init();
@@ -97,6 +98,7 @@ class getData extends Command
             $res .= "├AVGPrice: \n";
             $res .= "┊├minutes: " . $response['mins'] . "\n";
             $res .= "┊├Price: " . $response['price'] . "\n";
+            $i++;
         }
 
         $curl = curl_init();
@@ -122,7 +124,6 @@ class getData extends Command
             echo "cURL Error #:" . $err;
         } else {
             $response = json_decode($response, true);
-            $botman->say("Data List:", env('TELEGRAM_CHANNEL'), TelegramDriver::class);
             $res .= "├24hr: \n";
             $res .= "┊├Price: " . $response['priceChange'] . "\n";
             $res .= "┊├Price Percent: " . $response['priceChangePercent'] . "\n";
@@ -131,6 +132,9 @@ class getData extends Command
             $res .= "┊├count: " . $response['count'] . "\n";
             $res .= "\n\n @cryptoowatch \n";
             $res .= "---------------------------------\n\n";
+            $i++;
+        }
+        if($i==3) {
             $botman->say($res, env('TELEGRAM_CHANNEL'), TelegramDriver::class);
         }
     }
