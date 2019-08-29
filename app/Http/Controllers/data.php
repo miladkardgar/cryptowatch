@@ -47,23 +47,23 @@ class data extends Controller
 //            print_r($response);
             foreach ($response as $item => $value) {
 //                    $botman->say($item, env('TELEGRAM_CHANNEL'), TelegramDriver::class);
-//                    print_r($value);
-                $res = '';
-                $res .= "---------------------------------\n";
-                $res .= "Symble: " . $value['symbol'] . "\n\n";
-                $res .= "Price: " . $value['priceChange'] . "\n";
-                $res .= "Price Percent: " . $value['priceChangePercent'] . "\n";
-                $res .= "Volume: " . $value['volume'] . "\n";
-                $res .= "quoteVolume: " . $value['quoteVolume'] . "\n";
-                $res .= "count: " . $value['count'] . "\n";
-                $res .= "\n\n @cryptoowatch \n";
-                $res .= "---------------------------------\n\n";
-//                    $botman->say($res, env('TELEGRAM_CHANNEL'), TelegramDriver::class);
-//                    sleep(2);
-                print_r($res);
-                echo "<br>";
-                echo "<br>";
-                $i++;
+                    print_r($value);
+//                $res = '';
+//                $res .= "---------------------------------\n";
+//                $res .= "Symble: " . $value['symbol'] . "\n\n";
+//                $res .= "Price: " . $value['priceChange'] . "\n";
+//                $res .= "Price Percent: " . $value['priceChangePercent'] . "\n";
+//                $res .= "Volume: " . $value['volume'] . "\n";
+//                $res .= "quoteVolume: " . $value['quoteVolume'] . "\n";
+//                $res .= "count: " . $value['count'] . "\n";
+//                $res .= "\n\n @cryptoowatch \n";
+//                $res .= "---------------------------------\n\n";
+////                    $botman->say($res, env('TELEGRAM_CHANNEL'), TelegramDriver::class);
+////                    sleep(2);
+//                print_r($res);
+//                echo "<br>";
+//                echo "<br>";
+//                $i++;
             }
         }
 
