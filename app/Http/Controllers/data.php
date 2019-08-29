@@ -36,6 +36,7 @@ class data extends Controller
         if ($err) {
             echo "cURL Error #:" . $err;
         } else {
+            $response = json_decode($response,true);
             foreach ($response as $item) {
                 print_r($item);
             }
