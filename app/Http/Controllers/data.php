@@ -39,7 +39,8 @@ class data extends Controller
             $response = json_decode($response, true);
             $botman = app('botman');
 //            $botman->say("Data List:", env('TELEGRAM_CHANNEL'), TelegramDriver::class);
-
+print_r($response);
+die;
             $i = 0;
             foreach ($response as $item => $value) {
                 if ($i < 10) {
@@ -50,12 +51,12 @@ class data extends Controller
                     foreach ($value as $sym => $val) {
                         $res = '';
                         $res .= "---------------------------------";
-//                        $res .= "Symble: " . $sym['symbol'] . "\n\n";
+                        $res .= "Symble: " . $sym['symbol'] . "\n\n";
                         $res .= "Price: " . $sym['priceChange'] . "\n";
                         $res .= "Price Percent: " . $sym['priceChangePercent'] . "\n";
                         $res .= "Volume: " . $sym['volume'] . "\n";
                         $res .= "quoteVolume: " . $sym['quoteVolume'] . "\n";
-                        $res .= "count: " . $sym['count'] . "\n";
+                        $res .= "count: " . $value['count'] . "\n";
                         $res .= "---------------------------------\n\n";
                         print_r($res);
                     }
