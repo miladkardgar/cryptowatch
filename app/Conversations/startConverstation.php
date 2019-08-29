@@ -13,7 +13,6 @@ use Illuminate\Notifications\Action;
 class startConverstation extends Conversation
 {
 
-    private $coins;
 
     public function start()
     {
@@ -53,19 +52,13 @@ class startConverstation extends Conversation
             $this->bot->userStorage()->save([
                 'coins' => $answer->getText(),
             ]);
-//            $this->coins[]=$answer->getText();
             $this->askTime();
         });
     }
 
     public function askTime()
     {
-        $con = '';
-//        foreach ($this->coins as $coin) {
-//            $con .= $coin . "\n";
-//        }
         $res = 'ارز ' . $this->bot->userStorage()->get('coins') . " به لیست اضافه گردید.";
-        $res .= "\n\n".$con;
         $question = Question::create($res)
             ->fallback('Unable to ask question')
             ->callbackId('time')->addButtons(
