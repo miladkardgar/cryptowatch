@@ -10,6 +10,11 @@ use BotMan\Drivers\Telegram\TelegramDriver;
 class data extends Controller
 {
 
+    public function __construct()
+    {
+        $this->getData();
+    }
+
     public function getData()
     {
         $curl = curl_init();
@@ -105,5 +110,11 @@ class data extends Controller
 //
 ////            echo $response;
 //        }
+    }
+
+    public function run()
+    {
+        //
+        $this->getData();
     }
 }
