@@ -40,12 +40,11 @@ class data extends Controller
             $botman = app('botman');
 //            $botman->say("Data List:", env('TELEGRAM_CHANNEL'), TelegramDriver::class);
 
-            $i=0;
-            foreach ($response as $item) {
-                if($i<10) {
+            $i = 0;
+            foreach ($response as $item => $value) {
+                if ($i < 10) {
 //                    $botman->say($item, env('TELEGRAM_CHANNEL'), TelegramDriver::class);
-                    foreach ($item as $value) {
-                        print_r($value);
+                    print_r($value);
 //                        $res = '';
 //                        $res.="---------------------------------";
 //                        $res.="Symble: ".$value['symbol']."\n\n";
@@ -56,10 +55,9 @@ class data extends Controller
 //                        $res.="count: ".$value['count']."\n";
 //                        $res.="---------------------------------\n\n";
 //                        print_r($res);
-                        echo "<br>";
+                    echo "<br>";
 //                    $botman->say($res, env('TELEGRAM_CHANNEL'), TelegramDriver::class);
-                    }
-                    sleep(2);
+//                    sleep(2);
                 }
                 $i++;
             }
