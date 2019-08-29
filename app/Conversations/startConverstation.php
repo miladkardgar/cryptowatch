@@ -2,13 +2,11 @@
 
 namespace App\Conversations;
 
-use App\cryptoUser;
 use BotMan\BotMan\Messages\Conversations\Conversation;
 use BotMan\BotMan\Messages\Incoming\Answer;
 use BotMan\BotMan\Messages\Outgoing\Actions\Button;
 use BotMan\BotMan\Messages\Outgoing\Question;
 use Illuminate\Foundation\Inspiring;
-use Illuminate\Notifications\Action;
 
 class startConverstation extends Conversation
 {
@@ -48,7 +46,7 @@ class startConverstation extends Conversation
         $question = Question::create($res)
             ->fallback('Unable to ask question')
             ->callbackId('register_coin');
-        $this->ask($res, function (Answer $answer) {
+        $this->ask($question, function (Answer $answer) {
             $this->bot->userStorage()->save([
                 'coins' => $answer->getText(),
             ]);
