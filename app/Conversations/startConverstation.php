@@ -58,9 +58,9 @@ class startConverstation extends Conversation
     public function askTime()
     {
         $con = '';
-        foreach ($this->coins as $coin) {
-            $con .= $coin . "\n";
-        }
+//        foreach ($this->coins as $coin) {
+//            $con .= $coin . "\n";
+//        }
         $res = 'ارز ' . $con . " به لیست اضافه گردید." . '\n';
         $question = Question::create($res)
             ->fallback('Unable to ask question')
