@@ -49,8 +49,8 @@ class startConverstation extends Conversation
             ->callbackId('register_coin');
         return $this->ask($question, function (Answer $answer) {
             if ($answer->isInteractiveMessageReply()) {
-                array_push($this->coins, $answer->getText());
                 $this->askTime();
+                array_push($this->coins, $answer->getText());
             }
         });
     }
