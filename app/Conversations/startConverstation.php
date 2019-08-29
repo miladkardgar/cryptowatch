@@ -87,8 +87,8 @@ class startConverstation extends Conversation
     {
         $res = 'لطفاً زمان بندی اطلاع رسانی را وارد نمایید.' . "\n\n";
         $res .= 'زمان را بر اساس دقیقه وارد نمایید.' . "\n";
-        $res .= 'مثال: 5' . "\n";
-        $res .= 'هر پنج دقیقه یک بار' . "\n\n";
+        $res .= 'مثال: 5' . "\n\n";
+        $res .= '(هر پنج دقیقه یک بار)' . "\n\n.";
         $question = Question::create($res)
             ->fallback('Unable to ask question')
             ->callbackId('register_next');
