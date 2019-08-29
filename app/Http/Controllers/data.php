@@ -47,7 +47,7 @@ class data extends Controller
 //            print_r($response);
             foreach ($response as $item => $value) {
 //                    $botman->say($item, env('TELEGRAM_CHANNEL'), TelegramDriver::class);
-                    echo $item['symbol'];
+                    echo $item;
 //                $res = '';
 //                $res .= "---------------------------------\n";
 //                $res .= "Symble: " . $value['symbol'] . "\n\n";
