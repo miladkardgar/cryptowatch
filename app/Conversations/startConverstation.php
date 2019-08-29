@@ -2,6 +2,7 @@
 
 namespace App\Conversations;
 
+use App\User;
 use BotMan\BotMan\Messages\Conversations\Conversation;
 use BotMan\BotMan\Messages\Incoming\Answer;
 use BotMan\BotMan\Messages\Outgoing\Actions\Button;
@@ -25,21 +26,18 @@ class startConverstation extends Conversation
         return $this->ask($question, function (Answer $answer) {
             if ($answer->isInteractiveMessageReply()) {
                 if ($answer->getValue() === 'startUse') {
-
-//                    $user = $bot->getUser();
-//                    $bot->reply('Hello ' . $user->getFirstName() . ' ' . $user->getLastName());
-//                    $bot->reply('Your username is: ' . $user->getUsername());
-//                    $bot->reply('Your ID is: ' . $user->getId());
-//        User::create(
-//            [
-//                'chat_id' => $user->getId(),
-//                'name' => $user->getFirstName(),
-//                'last_name' => $user->getLastName(),
-//                'username' => $user->getUsername(),
-//            ]
-//        );
-                    $joke = "information";
-                    $this->say($joke->value->joke);
+                    $user = $this->getUser();
+                    $res = $user->getFirstName() . ' ' . $user->getLastName() . " وقت بخیر\n";
+                    $res .= 'نام کاربری شما:  ' . $user->getUsername();
+                    User::create(
+                        [
+                            'chat_id' => $user->getId(),
+                            'name' => $user->getFirstName(),
+                            'last_name' => $user->getLastName(),
+                            'username' => $user->getUsername(),
+                        ]
+                    );
+                    $this->say($res);
                 } elseif ($answer->getValue() === 'moreInformation') {
                     $this->say(Inspiring::quote());
                 }
