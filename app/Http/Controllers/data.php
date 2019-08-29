@@ -9,6 +9,7 @@ class data extends Controller
     //
     public function getData()
     {
+
         $curl = curl_init();
 
         curl_setopt_array($curl, array(
@@ -24,7 +25,7 @@ class data extends Controller
                 "apikey: vmPUZE6mv9SD5VNHk4HlWFsOr6aKE2zvsw0MuIgwCIPy6utIco14y7Ju91duEh8A",
                 "cache-control: no-cache",
                 "content-type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW",
-                "postman-token: ba500cda-93ce-d265-d6f3-98e1989bf66a",
+                "postman-token: 48d20685-715f-1d43-f532-ef2aa1ab3292",
                 "secretkey: NhqPtmdSJYdKjVHjA7PZj4Mge3R5YNiP1e3UZjInClVN65XAbvqqM6A7H5fATj0j"
             ),
         ));
