@@ -45,7 +45,7 @@ class data extends Controller
 //                    $botman->say($item, env('TELEGRAM_CHANNEL'), TelegramDriver::class);
 //                    print_r($value);
                     $res = '';
-                    $res .= "---------------------------------";
+                    $res .= "---------------------------------\n";
                     $res .= "Symble: " . $value['symbol'] . "\n\n";
                     $res .= "Price: " . $value['priceChange'] . "\n";
                     $res .= "Price Percent: " . $value['priceChangePercent'] . "\n";
