@@ -90,17 +90,10 @@ class startConverstation extends Conversation
         $res .= 'هر پنج دقیقه یک بار' . "\n\n";
         $question = Question::create($res)
             ->fallback('Unable to ask question')
-            ->callbackId('register_next')->addButtons(
-                [
-                    Button::create('افزودن ارز دیگر')->value('startUse'),
-                    Button::create('مرحله بعد')->value('nextLevel'),
-                ]
-            );
+            ->callbackId('register_next');
         return $this->ask($question, function (Answer $answer) {
-            if ($answer->isInteractiveMessageReply()) {
-                $res = 'اطلاعات ارز شما هر ' . $answer->getText() . ' دقیقه به اطلاع شما خواهد رسید.' . "\n\n";
-                $this->say($res);
-            }
+            $res = 'اطلاعات ارز شما هر ' . $answer->getText() . ' دقیقه به اطلاع شما خواهد رسید.' . "\n\n";
+            $this->say($res);
         });
     }
 
