@@ -38,16 +38,26 @@ class data extends Controller
         } else {
             $response = json_decode($response, true);
             $botman = app('botman');
-            $botman->say("Data List:", env('TELEGRAM_CHANNEL'), TelegramDriver::class);
+//            $botman->say("Data List:", env('TELEGRAM_CHANNEL'), TelegramDriver::class);
 
             $i=0;
             foreach ($response as $item) {
                 if($i<10) {
-                    $botman->say($item, env('TELEGRAM_CHANNEL'), TelegramDriver::class);
-
-                    echo "<br>";
-                    print_r($item);
-                    $botman->say($item, env('TELEGRAM_CHANNEL'), TelegramDriver::class);
+//                    $botman->say($item, env('TELEGRAM_CHANNEL'), TelegramDriver::class);
+                    foreach ($item as $value) {
+                        $res = '';
+                        $res.="---------------------------------";
+                        $res.="Symble: ".$value['symbol']."\n\n";
+                        $res.="Price: ".$value['priceChange']."\n";
+                        $res.="Price Percent: ".$value['priceChangePercent']."\n";
+                        $res.="Volume: ".$value['volume']."\n";
+                        $res.="quoteVolume: ".$value['quoteVolume']."\n";
+                        $res.="count: ".$value['count']."\n";
+                        $res.="---------------------------------\n\n";
+                        print_r($res);
+                        echo "<br>";
+//                    $botman->say($res, env('TELEGRAM_CHANNEL'), TelegramDriver::class);
+                    }
                     sleep(2);
                 }
                 $i++;
