@@ -2,6 +2,7 @@
 
 namespace App\Conversations;
 
+use App\cryptoUser;
 use BotMan\BotMan\Messages\Conversations\Conversation;
 use BotMan\BotMan\Messages\Incoming\Answer;
 use BotMan\BotMan\Messages\Outgoing\Actions\Button;
@@ -32,8 +33,14 @@ class startConverstation extends Conversation
                     $username = $user->getUsername();
                     $chatId = $user->getId();
 
-                    $connection = new \mysqli("localhost", "root", "68066806", "cryptowatch");
-                    $connection->query("INSERT INTO crypto_users (`name`,`last_name`,`chat_id`,`username`) VALUE (`" . $name . "`,`" . $lastName . "`,`" . $username . "`,`" . $chatId . "`)");
+                    cryptoUser::create(
+                        [
+                            'name'=>$user->getFirstName(),
+                            'last_name'=>$user->getLastName(),
+                            'chat_id'=>$user->getId(),
+                            'username'=>$user->getUsername(),
+                        ]
+                    );
                     $this->askCoins();
                 } elseif ($answer->getValue() === 'moreInformation') {
                     $this->say(Inspiring::quote());
