@@ -15,9 +15,9 @@ class CreateCryptoUsersTable extends Migration
     {
         Schema::create('crypto_users', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('chat_id')->nullable();
             $table->string('name')->nullable();
             $table->string('last_name')->nullable();
+            $table->string('chat_id')->nullable();
             $table->string('username')->nullable();
             $table->softDeletes();
             $table->timestamps();
