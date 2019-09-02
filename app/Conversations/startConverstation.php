@@ -39,7 +39,7 @@ class startConverstation extends Conversation
                     $username = $user->getUsername();
                     $chatId = $user->getId();
 
-                    if (!crypto_user::where('chat_id', $chatId)->exists()) {
+                    if (!crypto_user::where('chat_id', $chatId)->first()) {
                         $this->userTable->name = $name;
                         $this->userTable->last_name = $lastName;
                         $this->userTable->chat_id = $chatId;
