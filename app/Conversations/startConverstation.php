@@ -41,6 +41,7 @@ class startConverstation extends Conversation
                     $userTable->username = $chatId;
                     $userTable->save();
                     $this->askCoins();
+
                 } elseif ($answer->getValue() === 'moreInformation') {
                     $this->say(Inspiring::quote());
                 }
