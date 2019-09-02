@@ -34,12 +34,13 @@ class startConverstation extends Conversation
                     $chatId = $user->getId();
                     $u = crypto_user::where('chat_id', $chatId)->get();
                     if (!$u) {
-                        $this->userTable->name = $name;
-                        $this->userTable->last_name = $lastName;
-                        $this->userTable->chat_id = $chatId;
-                        $this->userTable->username = $username;
-                        $this->userTable->save();
-                        $userID = $this->userTable['id'];
+                        $userInfo = new crypto_user();
+                        $userInfo->name = $name;
+                        $userInfo->last_name = $lastName;
+                        $userInfo->chat_id = $chatId;
+                        $userInfo->username = $username;
+                        $userInfo->save();
+                        $userID = $userInfo['id'];
                     } else {
                         $userID = $u['id'];
                     }
