@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Data;
 use BotMan\Drivers\Telegram\TelegramDriver;
 use Illuminate\Console\Command;
 
@@ -66,9 +67,18 @@ class getData extends Command
             echo "cURL Error #:" . $err;
         } else {
             $response = json_decode($response, true);
-            if($response['price']>1){
-                $response['price']=number_format(round($response['price'],2),2);
+            $info = Data::create(
+                [
+                    'symbol' => $response['symbol'],
+                    'price' => $response['price']
+                ]
+            );
+            $info = $info['id'];
+
+            if ($response['price'] > 1) {
+                $response['price'] = number_format(round($response['price'], 2), 2);
             }
+
             $res .= "---------------------------------\n";
             $res .= "┌💎 #" . $response['symbol'] . "\n";
             $res .= "├price: " . $response['price'] . "\n";
@@ -99,8 +109,15 @@ class getData extends Command
         } else {
             $response2 = json_decode($response, true);
 
-            if($response2['price']>1){
-                $response2['price']=number_format(round($response2['price'],2),2);
+            Data::where('id', $info)
+                ->update(
+                    [
+                        'avg_mines' => $response2['mins'],
+                        'avg_price' => $response2['price'],
+                    ]
+                );
+            if ($response2['price'] > 1) {
+                $response2['price'] = number_format(round($response2['price'], 2), 2);
             }
             $res .= "├AVGPrice: \n";
             $res .= "┊├minutes: " . $response2['mins'] . "\n";
@@ -131,13 +148,25 @@ class getData extends Command
             echo "cURL Error #:" . $err;
         } else {
             $response3 = json_decode($response, true);
-            if($response3['priceChange']>1){
-                $response3['priceChange']=number_format(round($response3['priceChange'],2),2);
+
+            Data::where('id', $info)
+                ->update(
+                    [
+                        'priceChange' => $response3['priceChange'],
+                        'priceChangePercent' => $response3['priceChangePercent'],
+                        'volume' => $response3['volume'],
+                        'quoteVolume' => $response3['quoteVolume'],
+                        'count' => $response3['count'],
+                    ]
+                );
+            if ($response3['priceChange'] > 1) {
+                $response3['priceChange'] = number_format(round($response3['priceChange'], 2), 2);
             }
-            if($response3['volume']>1){
-                $response3['volume']=number_format(round($response3['volume'],2),2);
-            }if($response3['quoteVolume']>1){
-                $response3['quoteVolume']=number_format(round($response3['quoteVolume'],2),2);
+            if ($response3['volume'] > 1) {
+                $response3['volume'] = number_format(round($response3['volume'], 2), 2);
+            }
+            if ($response3['quoteVolume'] > 1) {
+                $response3['quoteVolume'] = number_format(round($response3['quoteVolume'], 2), 2);
             }
             $res .= "├24hr: \n";
             $res .= "┊├Price: " . $response3['priceChange'] . "\n";
@@ -149,7 +178,7 @@ class getData extends Command
             $res .= "\n\n @cryptoowatch \n\n";
             $i++;
         }
-        if($i==3) {
+        if ($i == 3) {
             $botman->say($res, env('TELEGRAM_CHANNEL'), TelegramDriver::class);
         }
     }
