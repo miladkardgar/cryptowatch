@@ -36,6 +36,11 @@ class data extends Controller
         } else {
             $response = json_decode($response, true);
             print_r($response);
+            \App\Data::create(
+                [
+                    'date'=>$response
+                ]
+            );
             $botman = app('botman');
             $botman->say("Data List:", env('TELEGRAM_CHANNEL'), TelegramDriver::class);
             $res = '';
