@@ -38,12 +38,13 @@ class startConverstation extends Conversation
                     $lastName = $user->getLastName();
                     $username = $user->getUsername();
                     $chatId = $user->getId();
-
-                    $this->userTable->name = $name;
-                    $this->userTable->last_name = $lastName;
-                    $this->userTable->chat_id = $username;
-                    $this->userTable->username = $chatId;
-                    $this->userTable->save();
+                    if (!crypto_user::where('chat_id', $chatId)->exsist()) {
+                        $this->userTable->name = $name;
+                        $this->userTable->last_name = $lastName;
+                        $this->userTable->chat_id = $username;
+                        $this->userTable->username = $chatId;
+                        $this->userTable->save();
+                    }
                     $this->askCoins();
 
                 } elseif ($answer->getValue() === 'moreInformation') {
