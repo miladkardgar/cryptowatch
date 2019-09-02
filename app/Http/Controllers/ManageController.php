@@ -38,6 +38,9 @@ class ManageController extends Controller
         if ($userInfo['id']) {
             $list = users_coin::where('user_id', $userInfo['id'])->get();
             $bot->reply($list);
+        }else{
+            $bot->reply("خطا در یافتن کاربر. مجددا تلاش نمایید.");
+
         }
 
     }
