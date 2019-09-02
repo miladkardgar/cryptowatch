@@ -72,7 +72,13 @@ class getData extends Command
             echo "cURL Error #:" . $err;
         } else {
             $response = json_decode($response, true);
-            $r = 100 * ($response['price'] - $max['price']) / $max['price'];
+            if ($response['price'] - $max['price'] <= 0) {
+                $min = $max['price'] - $response['price'];
+            } else {
+                $min = $response['price'] - $max['price'];
+            }
+            $min = '-' . $min;
+            $r = (100 * $min) / $max['price'];
             if ($r > 1) {
                 $resFinal = true;
             }
