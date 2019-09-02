@@ -3,7 +3,6 @@
 namespace App\Conversations;
 
 use App\crypto_user;
-use App\cryptoUser;
 use BotMan\BotMan\Messages\Conversations\Conversation;
 use BotMan\BotMan\Messages\Incoming\Answer;
 use BotMan\BotMan\Messages\Outgoing\Actions\Button;
@@ -12,6 +11,7 @@ use Illuminate\Foundation\Inspiring;
 
 class startConverstation extends Conversation
 {
+
 
     public function start()
     {
@@ -34,12 +34,11 @@ class startConverstation extends Conversation
                     $username = $user->getUsername();
                     $chatId = $user->getId();
 
-                    $userTable = new crypto_user();
-                    $userTable->name = $name;
-                    $userTable->last_name = $lastName;
-                    $userTable->chat_id = $username;
-                    $userTable->username = $chatId;
-                    $userTable->save();
+                    $this->userTable->name = $name;
+                    $this->userTable->last_name = $lastName;
+                    $this->userTable->chat_id = $username;
+                    $this->userTable->username = $chatId;
+                    $this->userTable->save();
                     $this->askCoins();
 
                 } elseif ($answer->getValue() === 'moreInformation') {
@@ -96,6 +95,7 @@ class startConverstation extends Conversation
     public function run()
     {
         //
+        $this->userTable = new crypto_user();
         $this->start();
     }
 }
