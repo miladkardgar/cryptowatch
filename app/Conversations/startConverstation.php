@@ -32,7 +32,7 @@ class startConverstation extends Conversation
                     $lastName = $user->getLastName();
                     $username = $user->getUsername();
                     $chatId = $user->getId();
-                    $u = crypto_user::where('chat_id', $chatId)->get();
+                    $u = crypto_user::where('chat_id', $chatId)->first();
                     if (!$u) {
                         $userInfo = new crypto_user();
                         $userInfo->name = $name;
