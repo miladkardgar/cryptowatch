@@ -5,7 +5,8 @@ namespace App\Conversations;
 use App\crypto_user;
 use App\users_coin;
 use BotMan\BotMan\Messages\Conversations\Conversation;
-use BotMan\BotMan\Messages\Incoming\Answer;
+use BotMan\BotMan\BotMan;
+
 
 class addSymbol extends Conversation
 {
@@ -17,8 +18,8 @@ class addSymbol extends Conversation
     public function run()
     {
         //
+        $this->bot = BotMan::class;
         $run = new startConverstation();
-
         $user = $this->bot->getUser();
         $name = $user->getFirstName();
         $lastName = $user->getLastName();
