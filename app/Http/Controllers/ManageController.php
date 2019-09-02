@@ -32,7 +32,6 @@ class ManageController extends Controller
     public function my_symbol(BotMan $bot)
     {
         $user = $bot->getUser();
-        $bot->reply($user->getId());
 
         $userInfo = crypto_user::where('chat_id', $user->getId())->first();
         if ($userInfo['id']) {
