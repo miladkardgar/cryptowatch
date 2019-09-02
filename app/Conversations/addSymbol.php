@@ -10,6 +10,14 @@ use BotMan\BotMan\BotMan;
 
 class addSymbol extends Conversation
 {
+
+    public function handle()
+    {
+        $botman = app('botman');
+
+        $botman->listen();
+    }
+
     /**
      * Start the conversation.
      *
@@ -18,16 +26,11 @@ class addSymbol extends Conversation
     public function run()
     {
         //
-        $this->bot = BotMan::class;
+        $botman = app('botman');
         $run = new startConverstation();
-        $user = $this->bot->getUser();
-        $name = $user->getFirstName();
-        $lastName = $user->getLastName();
-        $username = $user->getUsername();
+        $user = $botman->bot->getUser();
         $chatId = $user->getId();
-
         $userInfo = crypto_user::where('chat_id', $chatId)->first();
-
-        return $run->askCoins($userInfo['id']);
+        $run->askCoins($userInfo['id']);
     }
 }
