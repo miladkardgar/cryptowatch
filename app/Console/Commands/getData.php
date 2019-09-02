@@ -73,11 +73,10 @@ class getData extends Command
         } else {
             $response = json_decode($response, true);
             if ($response['price'] - $max['price'] <= 0) {
-                $min = $max['price'] - $response['price'];
+                $min = (int)$response['price'] - (int)$max['price'];
             } else {
-                $min = $response['price'] - $max['price'];
+                $min = (int)$response['price'] - (int)$max['price'];
             }
-            $min = '-' . $min;
             $r = (100 * $min) / $max['price'];
             if ($r > 1) {
                 $resFinal = true;
