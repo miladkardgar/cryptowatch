@@ -21,6 +21,6 @@ class addSymbol extends Conversation
         $run = new startConverstation();
         $chatId = $bo->getId();
         $userInfo = crypto_user::where('chat_id', $chatId)->first();
-        $run->askCoins($userInfo['id']);
+        return $run->askCoins($userInfo['id']);
     }
 }
