@@ -13,6 +13,11 @@ class startConverstation extends Conversation
 {
 
 
+    public function __construct()
+    {
+        $this->userTable = new crypto_user();
+    }
+
     public function start()
     {
 
@@ -95,7 +100,6 @@ class startConverstation extends Conversation
     public function run()
     {
         //
-        $this->userTable = new crypto_user();
         $this->start();
     }
 }
