@@ -3,6 +3,7 @@
 namespace App\Conversations;
 
 use App\crypto_user;
+use App\users_coin;
 use BotMan\BotMan\Messages\Conversations\Conversation;
 use BotMan\BotMan\Messages\Incoming\Answer;
 use BotMan\BotMan\Messages\Outgoing\Actions\Button;
@@ -16,6 +17,10 @@ class startConverstation extends Conversation
     public function __construct()
     {
         $this->userTable = new crypto_user();
+        $user = $this->bot->getUser();
+        $this->chat_id = $user->getId();
+        $this->userInfo = crypto_user::where('chat_id', $this->chat_id)->first();
+        $this->coin_id = 0;
     }
 
     public function start()
@@ -38,13 +43,13 @@ class startConverstation extends Conversation
                     $lastName = $user->getLastName();
                     $username = $user->getUsername();
                     $chatId = $user->getId();
-
                     if (!crypto_user::where('chat_id', $chatId)->first()) {
                         $this->userTable->name = $name;
                         $this->userTable->last_name = $lastName;
                         $this->userTable->chat_id = $chatId;
                         $this->userTable->username = $username;
                         $this->userTable->save();
+                        $this->userInfo = crypto_user::find('id', $this->userTable['id']);
                     }
                     $this->askCoins();
 
@@ -68,6 +73,20 @@ class startConverstation extends Conversation
             $this->bot->userStorage()->save([
                 'coins' => $answer->getText(),
             ]);
+            if (!users_coin::where(
+                [
+                    ['symbol', '=', $answer->getText()],
+                    ['user_id', '=', $this->userInfo['id']],
+                ]
+            )->first()) {
+                $coin = users_coin::create(
+                    [
+                        'symbol' => $answer->getText(),
+                        'user_id' => $this->userInfo['id'],
+                    ]
+                );
+                $this->coin_id = $coin['id'];
+            }
             $this->askTime();
         });
     }
@@ -86,6 +105,11 @@ class startConverstation extends Conversation
         $res .= 'مثال: 5' . "\n\n";
         $res .= '(هر پنج دقیقه یک بار)' . "\n\n.";
         $this->ask($res, function (Answer $answer) {
+            users_coin::where('id', $this->coin_id)->update(
+                [
+                    'period' => $answer->getText()
+                ]
+            );
             $res = 'اطلاعات ارز شما هر ' . $answer->getText() . ' دقیقه به اطلاع شما خواهد رسید.' . "\n\n";
             $this->bot->userStorage()->save([
                 'time' => $answer->getText(),
