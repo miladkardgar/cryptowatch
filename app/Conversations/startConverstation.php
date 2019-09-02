@@ -4,6 +4,7 @@ namespace App\Conversations;
 
 use App\crypto_user;
 use App\users_coin;
+use BotMan\BotMan\Facades\BotMan;
 use BotMan\BotMan\Messages\Conversations\Conversation;
 use BotMan\BotMan\Messages\Incoming\Answer;
 use BotMan\BotMan\Messages\Outgoing\Actions\Button;
@@ -55,7 +56,7 @@ class startConverstation extends Conversation
     public function askCoins($userID)
     {
         $this->userID = $userID;
-        $user = $this->bot->getUser();
+        $user = BotMan::getUser();
         $res = $user->getFirstName() . ' ' . $user->getLastName() . "\n";
         $res .= "وقت بخیر" . "\n\n";
         $res .= 'لطفاً نام ارز مورد نظر را وارد نمایید.' . "\n";
