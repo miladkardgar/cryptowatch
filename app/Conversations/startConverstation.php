@@ -62,12 +62,13 @@ class startConverstation extends Conversation
         $res .= 'لطفاً نام ارز مورد نظر را وارد نمایید.' . "\n";
         $res .= ' مثال: BTCUSDT' . "\n\n";
         $this->ask($res, function (Answer $answer) {
-            if (!users_coin::where(
+            $coinInfo = users_coin::where(
                 [
                     ['symbol', '=', $answer->getText()],
                     ['user_id', '=', $this->userID],
                 ]
-            )->first()) {
+            )->first();
+            if (!$coinInfo) {
                 $coin = users_coin::create(
                     [
                         'symbol' => $answer->getText(),
@@ -75,6 +76,8 @@ class startConverstation extends Conversation
                     ]
                 );
                 $coinID = $coin['id'];
+            } else {
+                $coinID = $coinInfo['id'];
             }
             $this->askTime($coinID);
         });
