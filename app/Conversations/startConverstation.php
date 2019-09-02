@@ -12,14 +12,6 @@ use Illuminate\Foundation\Inspiring;
 
 class startConverstation extends Conversation
 {
-
-    public function __construct()
-    {
-        $this->userTable = new crypto_user();
-        $this->userInfo = 0;
-    }
-
-
     public function start()
     {
 
@@ -121,9 +113,6 @@ class startConverstation extends Conversation
     public function run()
     {
         //
-        $user = $this->bot->getUser();
-        $this->chat_id = $user->getId();
-        $this->coin_id = 0;
         $this->start();
     }
 }
