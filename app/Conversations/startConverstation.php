@@ -41,8 +41,8 @@ class startConverstation extends Conversation
                     if (!crypto_user::where('chat_id', $chatId)->exsist()) {
                         $this->userTable->name = $name;
                         $this->userTable->last_name = $lastName;
-                        $this->userTable->chat_id = $username;
-                        $this->userTable->username = $chatId;
+                        $this->userTable->chat_id = $chatId;
+                        $this->userTable->username = $username;
                         $this->userTable->save();
                     }
                     $this->askCoins();
