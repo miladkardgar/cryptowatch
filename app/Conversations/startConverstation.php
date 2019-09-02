@@ -45,7 +45,6 @@ class startConverstation extends Conversation
                         $userID = $u['id'];
                     }
                     $this->askCoins($userID);
-
                 } elseif ($answer->getValue() === 'moreInformation') {
                     $this->say(Inspiring::quote());
                 }
@@ -79,6 +78,9 @@ class startConverstation extends Conversation
             } else {
                 $coinID = $coinInfo['id'];
             }
+            $this->bot->userStorage()->save([
+                'coins' => $answer->getText(),
+            ]);
             $this->askTime($coinID);
         });
     }
