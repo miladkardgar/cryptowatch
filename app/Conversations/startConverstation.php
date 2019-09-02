@@ -64,6 +64,7 @@ class startConverstation extends Conversation
             $this->bot->userStorage()->save([
                 'coins' => $answer->getText(),
             ]);
+            $this->userInfo = crypto_user::where('chat_id', $this->chat_id)->first();
             if (!users_coin::where(
                 [
                     ['symbol', '=', $answer->getText()],
@@ -117,11 +118,9 @@ class startConverstation extends Conversation
     public function run()
     {
         //
-
         $this->userTable = new crypto_user();
         $user = $this->bot->getUser();
         $this->chat_id = $user->getId();
-        $this->userInfo = crypto_user::where('chat_id', $this->chat_id)->first();
         $this->coin_id = 0;
         $this->start();
     }
