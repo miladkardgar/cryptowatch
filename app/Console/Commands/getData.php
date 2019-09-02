@@ -42,8 +42,13 @@ class getData extends Command
         //
 
         $botman = app('botman');
+        $adminID = env('ADMIN_ID');
+        $channel = env('TELEGRAM_CHANNEL');
+        $finalInsert = array();
         $res = '';
         $i = 0;
+        $resFinal = false;
+        $max = Data::latest('id')->first();
         $curl = curl_init();
         curl_setopt_array($curl, array(
             CURLOPT_URL => "https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT",
@@ -67,13 +72,20 @@ class getData extends Command
             echo "cURL Error #:" . $err;
         } else {
             $response = json_decode($response, true);
-            $info = Data::create(
-                [
-                    'symbol' => $response['symbol'],
-                    'price' => $response['price']
-                ]
-            );
-            $info = $info['id'];
+            $r = 100 * ($response['price'] - $max['price']) / $max['price'];
+            if ($r > 1) {
+                $resFinal = true;
+            }
+            $symbol = "\xF0\x9F\x92\xA4";
+            if ($r > 1) {
+                $symbol = "\xF0\x9F\x94\xA5";
+            } elseif ($r <= -1) {
+                $symbol = "\xF0\x9F\x93\x89";
+            }
+
+
+            $finalInsert['symbol'] = $response['symbol'];
+            $finalInsert['price'] = $response['price'];
 
             if ($response['price'] > 1) {
                 $response['price'] = number_format(round($response['price'], 2), 2);
@@ -81,7 +93,7 @@ class getData extends Command
 
             $res .= "---------------------------------\n";
             $res .= "┌💎 #" . $response['symbol'] . "\n";
-            $res .= "├price: " . $response['price'] . "\n";
+            $res .= "├price: " . $response['price'] . " | ($symbol" . round($r, 0) . "%)" . "\n";
             $i++;
         }
 
@@ -108,20 +120,22 @@ class getData extends Command
             echo "cURL Error #:" . $err;
         } else {
             $response2 = json_decode($response, true);
+            $finalInsert['mins'] = $response2['mins'];
+            $finalInsert['price2'] = $response2['price'];
+            $a = 100 * ($response2['price'] - $max['avg_price']) / $max['avg_price'];
 
-            Data::where('id', $info)
-                ->update(
-                    [
-                        'avg_mines' => $response2['mins'],
-                        'avg_price' => $response2['price'],
-                    ]
-                );
+            $symbol = "\xF0\x9F\x92\xA4";
+            if ($a > 1) {
+                $symbol = "\xF0\x9F\x94\xA5";
+            } elseif ($a <= -1) {
+                $symbol = "\xF0\x9F\x93\x89";
+            }
             if ($response2['price'] > 1) {
                 $response2['price'] = number_format(round($response2['price'], 2), 2);
             }
             $res .= "├AVGPrice: \n";
             $res .= "┊├minutes: " . $response2['mins'] . "\n";
-            $res .= "┊├Price: " . $response2['price'] . "\n";
+            $res .= "┊├Price: " . $response2['price'] . "($symbol" . round($a, 0) . "%)" . "\n";
             $i++;
         }
 
@@ -149,16 +163,32 @@ class getData extends Command
         } else {
             $response3 = json_decode($response, true);
 
-            Data::where('id', $info)
-                ->update(
-                    [
-                        'priceChange' => $response3['priceChange'],
-                        'priceChangePercent' => $response3['priceChangePercent'],
-                        'volume' => $response3['volume'],
-                        'quoteVolume' => $response3['quoteVolume'],
-                        'count' => $response3['count'],
-                    ]
-                );
+
+            $finalInsert['priceChange'] = $response3['priceChange'];
+            $finalInsert['priceChangePercent'] = $response3['priceChangePercent'];
+            $finalInsert['volume'] = $response3['volume'];
+            $finalInsert['quoteVolume'] = $response3['quoteVolume'];
+            $finalInsert['count'] = $response3['count'];
+
+            $h = 100 * ($response3['priceChange'] - $max['priceChange']) / $max['priceChange'];
+
+            $symbol = "\xF0\x9F\x92\xA4";
+            if ($h > 1) {
+                $symbol = "\xF0\x9F\x94\xA5";
+            } elseif ($h <= -1) {
+                $symbol = "\xF0\x9F\x93\x89";
+            }
+            $w = 100 * ($response3['volume'] - $max['volume']) / $max['volume'];
+            if ($w > 1) {
+                $resFinal = true;
+            }
+            $symbolW = "\xF0\x9F\x92\xA4";
+            if ($w > 1) {
+                $symbolW = "\xF0\x9F\x94\xA5";
+            } elseif ($w <= -1) {
+                $symbolW = "\xF0\x9F\x93\x89";
+            }
+
             if ($response3['priceChange'] > 1) {
                 $response3['priceChange'] = number_format(round($response3['priceChange'], 2), 2);
             }
@@ -169,17 +199,30 @@ class getData extends Command
                 $response3['quoteVolume'] = number_format(round($response3['quoteVolume'], 2), 2);
             }
             $res .= "├24hr: \n";
-            $res .= "┊├Price: " . $response3['priceChange'] . "\n";
+            $res .= "┊├Price: " . $response3['priceChange'] . "($symbol" . round($h, 0) . "%)" . "\n";
             $res .= "┊├Price Percent: " . $response3['priceChangePercent'] . "\n";
-            $res .= "┊├Volume: " . $response3['volume'] . "\n";
+            $res .= "┊├Volume: " . $response3['volume'] . "($symbolW" . round($w, 0) . "%)" . "\n";
             $res .= "┊├quoteVolume: " . $response3['quoteVolume'] . "\n";
             $res .= "┊├count: " . $response3['count'] . "\n";
             $res .= "---------------------------------\n";
             $res .= "\n\n @cryptoowatch \n\n";
             $i++;
         }
-        if ($i == 3) {
-            $botman->say($res, env('TELEGRAM_CHANNEL'), TelegramDriver::class);
+        if ($i == 3 && $resFinal) {
+            Data::create(
+                [
+                    'symbol' => $finalInsert['symbol'],
+                    'price' => $finalInsert['price'],
+                    'avg_mines' => $finalInsert['mins'],
+                    'avg_price' => $finalInsert['price2'],
+                    'priceChange' => $finalInsert['priceChange'],
+                    'priceChangePercent' => $finalInsert['priceChangePercent'],
+                    'volume' => $finalInsert['volume'],
+                    'quoteVolume' => $finalInsert['quoteVolume'],
+                    'count' => $finalInsert['count'],
+                ]
+            );
+            $botman->say($res, $channel, TelegramDriver::class);
         }
     }
 }

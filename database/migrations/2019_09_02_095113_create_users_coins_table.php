@@ -18,6 +18,7 @@ class CreateUsersCoinsTable extends Migration
             $table->integer('user_id');
             $table->string('symbol');
             $table->integer('period')->nullable();
+            $table->integer('percent')->nullable();
             $table->string('status')->default('active');
             $table->softDeletes();
             $table->timestamps();

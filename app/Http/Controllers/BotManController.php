@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use BotMan\BotMan\BotMan;
+use BotMan\Drivers\Telegram\TelegramDriver;
 use Illuminate\Http\Request;
 use App\Conversations\ExampleConversation;
 
@@ -33,5 +34,10 @@ class BotManController extends Controller
     public function startConversation(BotMan $bot)
     {
         $bot->startConversation(new ExampleConversation());
+    }
+
+    public function warn_admin(BotMan $bot,$messages)
+    {
+        $bot->say($messages, env('ADMIN_ID'), TelegramDriver::class);
     }
 }
