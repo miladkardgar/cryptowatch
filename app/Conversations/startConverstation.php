@@ -46,11 +46,8 @@ class startConverstation extends Conversation
                         $this->userTable->chat_id = $chatId;
                         $this->userTable->username = $username;
                         $this->userTable->save();
-                        $this->userInfo = crypto_user::find('id', $this->userTable['id']);
-                    } else {
-                        $this->userInfo = crypto_user::find('id', $u['id']);
                     }
-                    $this->askCoins();
+                    $this->askCoins($this->userTable['id']);
 
                 } elseif ($answer->getValue() === 'moreInformation') {
                     $this->say(Inspiring::quote());
@@ -61,44 +58,43 @@ class startConverstation extends Conversation
         });
     }
 
-    public function askCoins()
+    public function askCoins($userID)
     {
+        $this->userID = $userID;
         $user = $this->bot->getUser();
         $res = $user->getFirstName() . ' ' . $user->getLastName() . "\n";
         $res .= "وقت بخیر" . "\n\n";
         $res .= 'لطفاً نام ارز مورد نظر را وارد نمایید.' . "\n";
         $res .= ' مثال: BTCUSDT' . "\n\n";
         $this->ask($res, function (Answer $answer) {
-            $this->bot->userStorage()->save([
-                'coins' => $answer->getText(),
-            ]);
             if (!users_coin::where(
                 [
                     ['symbol', '=', $answer->getText()],
-                    ['user_id', '=', $this->userInfo['id']],
+                    ['user_id', '=', $this->userID],
                 ]
             )->first()) {
                 $coin = users_coin::create(
                     [
                         'symbol' => $answer->getText(),
-                        'user_id' => $this->userInfo['id'],
+                        'user_id' => $this->userID,
                     ]
                 );
-                $this->coin_id = $coin['id'];
+                $coinID = $coin['id'];
             }
-            $this->askTime();
+            $this->askTime($coinID);
         });
     }
 
-    public function askTime()
+    public function askTime($coinID)
     {
         $res = 'ارز ' . $this->bot->userStorage()->get('coins') . " به لیست اضافه گردید.";
         $this->say($res);
-        $this->askNextLevel();
+        $this->askNextLevel($coinID);
     }
 
-    public function askNextLevel()
+    public function askNextLevel($coinID)
     {
+        $this->coin_id = $coinID;
         $res = 'لطفاً زمان بندی اطلاع رسانی را وارد نمایید.' . "\n\n";
         $res .= 'زمان را بر اساس دقیقه وارد نمایید.' . "\n";
         $res .= 'مثال: 5' . "\n\n";
