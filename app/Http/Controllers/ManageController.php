@@ -35,7 +35,7 @@ class ManageController extends Controller
 
         $userInfo = crypto_user::where('chat_id', $user->getId())->first();
         if ($userInfo['id']) {
-            $bot->reply("213");
+            $bot->reply($userInfo['id']);
             $list = users_coin::where('user_id', $userInfo['id'])->get();
         }else{
             $bot->reply("خطا در یافتن کاربر. مجددا تلاش نمایید.");
