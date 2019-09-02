@@ -38,14 +38,16 @@ class startConverstation extends Conversation
                         $this->userTable->chat_id = $chatId;
                         $this->userTable->username = $username;
                         $this->userTable->save();
+                        $this->userID = $this->userTable['id'];
+                    }else{
+                        $u = crypto_user::where('chat_id', $chatId)->first();
+                        $this->userID = $u['id'];
                     }
-                    $this->askCoins($this->userTable['id']);
+                    $this->askCoins($this->userID );
 
                 } elseif ($answer->getValue() === 'moreInformation') {
                     $this->say(Inspiring::quote());
                 }
-            } else {
-                $this->askCoins();
             }
         });
     }
