@@ -44,14 +44,37 @@ class ManageController extends Controller
                 $res = 'لیست ارز های ثبت شده:' . "\n";
                 $res .= "----------------------------" . "\n";
                 $i = 1;
+                $bot->reply($res);
+                $this->bot = $bot;
                 foreach ($list as $item => $value) {
-                    $res .= $i . "- " . $value['symbol'];
-                    $res .= " - " . $value['period'];
-                    $res .= " دقیقه یک بار" . "\n";
-                    $i++;
+                    $res = "\xF0\x9F\x92\xA0	" . " نام ارز: " . strtoupper($value['symbol']) . "\n\n";
+                    $res .= "\xE2\x8F\xB0	" . " زمانبدی ارسال: " . $value['period'] . " دقیقه" . "\n\n";
+                    $res .= "\x23\xE2\x83\xA3	" . " درصد تغییر: " . $value['percent'] . "% " . "\n\n";
+                    $res .= "\xF0\x9F\x92\xB1	" . " @cryptoowatch";
+
+//                    $question = Question::create($res)->addButtons(
+//                        [
+//                            Button::create('حذف')->value('delete')->name('delete2'),
+//                            Button::create('ویرایش')->value('edit')->name('edit2'),
+//                        ]
+//                    )->callbackId('id_'.$value['id']);
+                    $bot->ask($res,function (Answer $answer) {
+                        $this->say($answer->getCallbackId());
+                        if ($answer->isInteractiveMessageReply()) {
+//                            $this->say($answer->getCallbackId());
+//                            switch ($answer->getValue()) {
+//                                case 'delete':
+//                                    $this->say('delete');
+//                                    break;
+//                                case 'edit':
+//                                    $this->say('edit');
+//                                    break;
+//                            }
+                        }
+                    }, $this->keyboard());
+
                 }
                 $res .= "----------------------------" . "\n";
-                $bot->reply($res);
             } else {
                 $res = "هیچ ارزی در سیتم ثبت نشده است." . "\n\n";
                 $res .= "ثبت ارز جدید: " . "\n";
@@ -62,5 +85,21 @@ class ManageController extends Controller
             $bot->reply("خطا در یافتن کاربر. مجددا تلاش نمایید.");
         }
 
+    }
+
+    public function setting(BotMan $bot)
+    {
+        $bot->reply('این قسمت در حال طراحی میباشد...');
+    }
+
+
+    public function keyboard()
+    {
+        return Keyboard::create()
+            ->type(Keyboard::TYPE_INLINE)
+            ->addRow(
+                KeyboardButton::create('حذف')->callbackData('delete'),
+                KeyboardButton::create('ویرایش')->callbackData('edit'))
+            ->toArray();
     }
 }

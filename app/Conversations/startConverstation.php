@@ -12,6 +12,7 @@ use BotMan\BotMan\Messages\Outgoing\Question;
 use BotMan\Drivers\Telegram\TelegramDriver;
 use Illuminate\Foundation\Inspiring;
 use App\Http\Controllers\BotManController;
+use Validator;
 
 class startConverstation extends Conversation
 {
@@ -35,34 +36,32 @@ class startConverstation extends Conversation
             ]);
 
         $this->ask($question, function (Answer $answer) {
-            if ($answer->isInteractiveMessageReply()) {
-                if ($answer->getValue() === 'startUse') {
+            if ($answer->getValue() === 'startUse') {
 
-                    $user = $this->bot->getUser();
-                    $name = $user->getFirstName();
-                    $lastName = $user->getLastName();
-                    $username = $user->getUsername();
-                    $chatId = $user->getId();
-                    $u = crypto_user::where('chat_id', $chatId)->first();
-                    if (!$u) {
-                        $userInfo = new crypto_user();
-                        $userInfo->name = $name;
-                        $userInfo->last_name = $lastName;
-                        $userInfo->chat_id = $chatId;
-                        $userInfo->username = $username;
-                        $userInfo->save();
-                        $userID = $userInfo['id'];
-                        $adminMessage = $name . " " . $lastName . "\n\n" . " عضو سیستم شد.";
-                        $this->adminMessage($adminMessage);
-                    } else {
-                        $userID = $u['id'];
-                        $adminMessage = $name . " " . $lastName . "\n\n" . " وارد سیستم شد.";
-                        $this->adminMessage($adminMessage);
-                    }
-                    $this->askCoins($userID);
-                } elseif ($answer->getValue() === 'moreInformation') {
-                    $this->say('این قسمت در حال طراحی میباشد...');
+                $user = $this->bot->getUser();
+                $name = $user->getFirstName();
+                $lastName = $user->getLastName();
+                $username = $user->getUsername();
+                $chatId = $user->getId();
+                $u = crypto_user::where('chat_id', $chatId)->first();
+                if (!$u) {
+                    $userInfo = new crypto_user();
+                    $userInfo->name = $name;
+                    $userInfo->last_name = $lastName;
+                    $userInfo->chat_id = $chatId;
+                    $userInfo->username = $username;
+                    $userInfo->save();
+                    $userID = $userInfo['id'];
+                    $adminMessage = $name . " " . $lastName . "\n\n" . " عضو سیستم شد.";
+                    $this->adminMessage($adminMessage);
+                } else {
+                    $userID = $u['id'];
+                    $adminMessage = $name . " " . $lastName . "\n\n" . " وارد سیستم شد.";
+                    $this->adminMessage($adminMessage);
                 }
+                $this->askCoins($userID);
+            } elseif ($answer->getValue() === 'moreInformation') {
+                $this->say('این قسمت در حال طراحی میباشد...');
             }
         });
     }
@@ -78,7 +77,10 @@ class startConverstation extends Conversation
         $res .= 'لطفاً نام ارز مورد نظر را وارد نمایید.' . "\n";
         $res .= ' مثال: BTCUSDT' . "\n\n";
         $this->ask($res, function (Answer $answer) {
-            if ($this->check($answer->getText()) && is_string($answer->getText())) {
+            $validator = Validator::make(['coin' => $answer->getText()], [
+                'coin' => 'required|string',
+            ]);
+            if ($validator->valid() && $this->check($answer->getText())) {
                 $coinInfo = users_coin::where(
                     [
                         ['symbol', '=', $answer->getText()],
@@ -109,10 +111,8 @@ class startConverstation extends Conversation
                 $this->say("\xE2\x9A\xA0	" . 'نام ارز وارد شده اشتباه میباشد.' . "\n\n" . 'لطفاً مجددا وارد نمایید.' . "\n \xE2\x9B\x94	");
                 $this->askCoins($this->userID);
             }
-
         });
     }
-
 
     public function askNextLevel($coinID)
     {
@@ -122,21 +122,24 @@ class startConverstation extends Conversation
         $res .= 'مثال: 5' . "\n\n";
         $res .= '(هر پنج دقیقه یک بار)' . "\n\n \xE2\x8F\xB0	";
         $this->ask($res, function (Answer $answer) {
-            if (is_numeric($answer->getText()) && $answer->getText() > 0 && $answer->getText() < 1000) {
-                users_coin::where('id', $this->coin_id)->update(
-                    [
-                        'period' => $answer->getText()
-                    ]
-                );
-                $this->bot->userStorage()->save([
-                    'time' => $answer->getText(),
+                $validator = Validator::make(['time' => $answer->getText()], [
+                    'time' => 'integer|min:0|max:500',
                 ]);
+                if ($validator->valid()) {
+                    users_coin::where('id', $this->coin_id)->update(
+                        [
+                            'period' => $answer->getText()
+                        ]
+                    );
+                    $this->bot->userStorage()->save([
+                        'time' => $answer->getText(),
+                    ]);
 
-                $this->askChange($this->coin_id);
-            } else {
-                $this->say("\xE2\x9A\xA0	" . 'زمان وارد شده صحیح نمیباشد.' . "\n\n" . 'بازه زمانی بین 1 و 500 دقیقه میباشد.' . "\n\n" . 'لطفاً مجدد زمان را وارد نمایید.' . "\xE2\x9B\x94	");
-                $this->askNextLevel($this->coin_id);
-            }
+                    $this->askChange($this->coin_id);
+                } else {
+                    $this->say("\xE2\x9A\xA0	" . 'زمان وارد شده صحیح نمیباشد.' . "\n\n" . 'بازه زمانی بین 1 و 500 دقیقه میباشد.' . "\n\n" . 'لطفاً مجدد زمان را وارد نمایید.' . "\xE2\x9B\x94	");
+                    $this->askNextLevel($this->coin_id);
+                }
         });
     }
 
@@ -148,8 +151,10 @@ class startConverstation extends Conversation
         $res .= 'مثال: 2' . "\n\n";
         $res .= '(هر بار که ارز مورد نظر 2 درصد تغییر قیمتی داشت اطلاع رسانی میکند.)' . "\n\n \x23\xE2\x83\xA3";
         $this->ask($res, function (Answer $answer) {
-            if (is_numeric($answer->getText()) && $answer->getText() > 0 && $answer->getText() < 1000) {
-
+            $validator = Validator::make(['percent' => $answer->getText()], [
+                'percent' => 'integer|min:0|max:500',
+            ]);
+            if ($validator->valid()) {
                 $this->bot->userStorage()->save([
                     'percent' => $answer->getText(),
                 ]);
@@ -169,7 +174,6 @@ class startConverstation extends Conversation
             }
         });
     }
-
 
     public function check($symbol)
     {
@@ -210,8 +214,7 @@ class startConverstation extends Conversation
      *
      * @return mixed
      */
-    public
-    function run()
+    public function run()
     {
         $this->start();
     }

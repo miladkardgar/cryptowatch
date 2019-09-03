@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Data;
+use App\users_coin;
 use BotMan\Drivers\Telegram\TelegramDriver;
 use Illuminate\Console\Command;
 
@@ -44,190 +45,222 @@ class getData extends Command
         $botman = app('botman');
         $adminID = env('ADMIN_ID');
         $channel = env('TELEGRAM_CHANNEL');
-        $finalInsert = array();
-        $res = '';
-        $i = 0;
-        $resFinal = false;
-        $max = Data::latest('id')->first();
-        $curl = curl_init();
-        curl_setopt_array($curl, array(
-            CURLOPT_URL => "https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT",
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => "",
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 30,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => "GET",
-            CURLOPT_HTTPHEADER => array(
-                "apikey: TZMPp6CmDEBJIgESoINrRmBu963Pft1OZc9iz6lia8xAFcL6RHIrqrLQAKfAGcDL",
-                "cache-control: no-cache",
-                "postman-token: f261e154-5bfd-5091-6ef1-161c14d9bcf2",
-                "secretkey: oSaJwiMYrA331cL6kPOuMK3bLGPNOu723CQlghqLY9oJIQgSP9kPm1dFSDlJKAwn"
-            ),
-        ));
-        $response = curl_exec($curl);
-        $err = curl_error($curl);
-        curl_close($curl);
-        if ($err) {
-            echo "cURL Error #:" . $err;
-        } else {
-            $response = json_decode($response, true);
-            if ($response['price'] - $max['price'] <= 0) {
-                $min = (int)$response['price'] - (int)$max['price'];
+        $symbols = users_coin::groupBy("symbol")->get();
+        foreach ($symbols as $symbol => $value) {
+            $res = '';
+            $finalInsert = array();
+            $resFinal = false;
+            $max = Data::latest('id')->where('symbol', $value['symbol'])->first();
+            $curl = curl_init();
+            curl_setopt_array($curl, array(
+                CURLOPT_URL => "https://api.binance.com/api/v3/ticker/price?symbol=" . strtoupper($value['symbol']),
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING => "",
+                CURLOPT_MAXREDIRS => 10,
+                CURLOPT_TIMEOUT => 30,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => "GET",
+                CURLOPT_HTTPHEADER => array(
+                    "apikey: TZMPp6CmDEBJIgESoINrRmBu963Pft1OZc9iz6lia8xAFcL6RHIrqrLQAKfAGcDL",
+                    "cache-control: no-cache",
+                    "postman-token: f261e154-5bfd-5091-6ef1-161c14d9bcf2",
+                    "secretkey: oSaJwiMYrA331cL6kPOuMK3bLGPNOu723CQlghqLY9oJIQgSP9kPm1dFSDlJKAwn"
+                ),
+            ));
+            $response = curl_exec($curl);
+            $err = curl_error($curl);
+            curl_close($curl);
+            if ($err) {
+                echo "cURL Error #:" . $err;
             } else {
-                $min = (int)$response['price'] - (int)$max['price'];
+                $response = json_decode($response, true);
+                $finalInsert['symbol'] = $response['symbol'];
+                $finalInsert['price'] = $response['price'];
             }
-            $r = (100 * $min) / $max['price'];
-            if ($r > 1) {
+
+            $curl = curl_init();
+            curl_setopt_array($curl, array(
+                CURLOPT_URL => "https://api.binance.com/api/v3/avgPrice?symbol=" . strtoupper($value['symbol']),
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING => "",
+                CURLOPT_MAXREDIRS => 10,
+                CURLOPT_TIMEOUT => 30,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => "GET",
+                CURLOPT_HTTPHEADER => array(
+                    "apikey: TZMPp6CmDEBJIgESoINrRmBu963Pft1OZc9iz6lia8xAFcL6RHIrqrLQAKfAGcDL",
+                    "cache-control: no-cache",
+                    "postman-token: f261e154-5bfd-5091-6ef1-161c14d9bcf2",
+                    "secretkey: oSaJwiMYrA331cL6kPOuMK3bLGPNOu723CQlghqLY9oJIQgSP9kPm1dFSDlJKAwn"
+                ),
+            ));
+            $response = curl_exec($curl);
+            $err = curl_error($curl);
+            curl_close($curl);
+            if ($err) {
+                echo "cURL Error #:" . $err;
+            } else {
+                $response2 = json_decode($response, true);
+                $finalInsert['mins'] = $response2['mins'];
+                $finalInsert['price2'] = $response2['price'];
+            }
+
+            $curl = curl_init();
+            curl_setopt_array($curl, array(
+                CURLOPT_URL => "https://api.binance.com/api/v1/ticker/24hr?symbol=" . strtoupper($value['symbol']),
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING => "",
+                CURLOPT_MAXREDIRS => 10,
+                CURLOPT_TIMEOUT => 30,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => "GET",
+                CURLOPT_HTTPHEADER => array(
+                    "apikey: TZMPp6CmDEBJIgESoINrRmBu963Pft1OZc9iz6lia8xAFcL6RHIrqrLQAKfAGcDL",
+                    "cache-control: no-cache",
+                    "postman-token: f261e154-5bfd-5091-6ef1-161c14d9bcf2",
+                    "secretkey: oSaJwiMYrA331cL6kPOuMK3bLGPNOu723CQlghqLY9oJIQgSP9kPm1dFSDlJKAwn"
+                ),
+            ));
+            $response = curl_exec($curl);
+            $err = curl_error($curl);
+            curl_close($curl);
+            if ($err) {
+                echo "cURL Error #:" . $err;
+            } else {
+                $response3 = json_decode($response, true);
+                $finalInsert['priceChange'] = $response3['priceChange'];
+                $finalInsert['priceChangePercent'] = $response3['priceChangePercent'];
+                $finalInsert['volume'] = $response3['volume'];
+                $finalInsert['quoteVolume'] = $response3['quoteVolume'];
+                $finalInsert['count'] = $response3['count'];
+            }
+
+
+            $percentPrice = 0;
+            $percentVolume = 0;
+            $percentAvg = 0;
+            $percentChange = 0;
+            $symbolVolume = "\xF0\x9F\x94\xBB";
+            $symbolPrice = "\xF0\x9F\x94\xBB";
+            $symbolAvg = "\xF0\x9F\x94\xBB";
+            $symbolChange = "\xF0\x9F\x94\xBB";
+
+            if ($max['price'] != 0) {
+                if ($max['price'] <= 0) {
+                    $max['price'] *= 100000;
+                    $finalInsert['price'] *= 100000;
+                    $percentPrice = ($max['price'] - $finalInsert['price']) / $max['price'];
+                    $percentPrice *= 100;
+                    $max['price'] /= 100000;
+                    $finalInsert['price'] /= 100000;
+                } else {
+                    $percentPrice = ($max['price'] - $finalInsert['price']) / $max['price'];
+                    $percentPrice *= 100;
+                }
+
+                if ($max['price'] < $finalInsert['price']) {
+                    $percentPrice *= -1;
+                    $symbolPrice = "\xF0\x9F\x94\xA5";
+                } elseif ($max['price'] == $finalInsert['price']) {
+                    $symbolPrice = "\xF0\x9F\x94\xB8";
+                }
+            }
+            if ($max['volume'] != 0) {
+                if ($max['volume'] <= 0) {
+                    $max['volume'] *= 100000;
+                    $finalInsert['volume'] *= 100000;
+                    $percentVolume = ($max['volume'] - $finalInsert['volume']) / $max['volume'];
+                    $percentVolume *= 100;
+                    $max['volume'] /= 100000;
+                    $finalInsert['volume'] /= 100000;
+                } else {
+                    $percentVolume = ($max['volume'] - $finalInsert['volume']) / $max['volume'];
+                    $percentVolume *= 100;
+                }
+
+                if ($max['volume'] < $finalInsert['volume']) {
+                    $percentVolume *= -1;
+                    $symbolVolume = "\xF0\x9F\x94\xA5";
+                } elseif ($max['volume'] == $finalInsert['volume']) {
+                    $symbolVolume = "\xF0\x9F\x94\xB8";
+                }
+            }
+            if ($max['avg_price'] != 0) {
+                if ($max['avg_price'] <= 0) {
+                    $max['avg_price'] *= 100000;
+                    $finalInsert['price2'] *= 100000;
+                    $percentAvg = ($max['avg_price'] - $finalInsert['price2']) / $max['avg_price'];
+                    $percentAvg *= 100;
+                    $max['avg_price'] /= 100000;
+                    $finalInsert['price2'] /= 100000;
+                } else {
+                    $percentAvg = ($max['avg_price'] - $finalInsert['price2']) / $max['avg_price'];
+                    $percentAvg *= 100;
+                }
+                if ($max['avg_price'] < $finalInsert['price2']) {
+                    $percentAvg *= -1;
+                    $symbolAvg = "\xF0\x9F\x94\xA5";
+                } elseif ($max['avg_price'] == $finalInsert['price2']) {
+                    $symbolAvg = "\xF0\x9F\x94\xB8";
+                }
+            }
+            if ($max['priceChange'] != 0) {
+                if ($max['priceChange'] <= 0) {
+                    $max['priceChange'] *= 1000000;
+                    $finalInsert['priceChange'] *= 1000000;
+
+                    $percentChange = ($max['priceChange'] - $finalInsert['priceChange']) / $max['priceChange'];
+                    $percentChange *= 100;
+                    $max['priceChange'] /= 1000000;
+                    $finalInsert['priceChange'] /= 1000000;
+                } else {
+                    $percentChange = ($max['priceChange'] - $finalInsert['priceChange']) / $max['priceChange'];
+                    $percentChange *= 100;
+                }
+
+                if ($max['priceChange'] < $finalInsert['priceChange']) {
+                    $percentChange *= -1;
+                    $symbolChange = "\xF0\x9F\x94\xA5";
+                } elseif ($max['priceChange'] == $finalInsert['priceChange']) {
+                    $symbolChange = "\xF0\x9F\x94\xB8	";
+                }
+            }
+
+            if ($percentPrice >= 1 || $percentVolume >= 1) {
                 $resFinal = true;
-            }
-            $symbol = "\xF0\x9F\x92\xA4";
-            if ($r > 1) {
-                $symbol = "\xF0\x9F\x94\xA5";
-            } elseif ($r <= -1) {
-                $symbol = "\xF0\x9F\x93\x89";
-            }
 
-
-            $finalInsert['symbol'] = $response['symbol'];
-            $finalInsert['price'] = $response['price'];
-
-            if ($response['price'] > 1) {
-                $response['price'] = number_format(round($response['price'], 2), 2);
-            }
-
-            $res .= "---------------------------------\n";
-            $res .= "┌💎 #" . $response['symbol'] . "\n";
-            $res .= "├price: " . $response['price'] . " | ($symbol" . round($r, 0) . "%)" . "\n";
-            $i++;
-        }
-
-        $curl = curl_init();
-        curl_setopt_array($curl, array(
-            CURLOPT_URL => "https://api.binance.com/api/v3/avgPrice?symbol=BTCUSDT",
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => "",
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 30,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => "GET",
-            CURLOPT_HTTPHEADER => array(
-                "apikey: TZMPp6CmDEBJIgESoINrRmBu963Pft1OZc9iz6lia8xAFcL6RHIrqrLQAKfAGcDL",
-                "cache-control: no-cache",
-                "postman-token: f261e154-5bfd-5091-6ef1-161c14d9bcf2",
-                "secretkey: oSaJwiMYrA331cL6kPOuMK3bLGPNOu723CQlghqLY9oJIQgSP9kPm1dFSDlJKAwn"
-            ),
-        ));
-        $response = curl_exec($curl);
-        $err = curl_error($curl);
-        curl_close($curl);
-        if ($err) {
-            echo "cURL Error #:" . $err;
-        } else {
-            $response2 = json_decode($response, true);
-            $finalInsert['mins'] = $response2['mins'];
-            $finalInsert['price2'] = $response2['price'];
-            $a = 100 * ($response2['price'] - $max['avg_price']) / $max['avg_price'];
-
-            $symbol = "\xF0\x9F\x92\xA4";
-            if ($a > 1) {
-                $symbol = "\xF0\x9F\x94\xA5";
-            } elseif ($a <= -1) {
-                $symbol = "\xF0\x9F\x93\x89";
-            }
-            if ($response2['price'] > 1) {
-                $response2['price'] = number_format(round($response2['price'], 2), 2);
-            }
-            $res .= "├AVGPrice: \n";
-            $res .= "┊├minutes: " . $response2['mins'] . "\n";
-            $res .= "┊├Price: " . $response2['price'] . "($symbol" . round($a, 0) . "%)" . "\n";
-            $i++;
-        }
-
-        $curl = curl_init();
-        curl_setopt_array($curl, array(
-            CURLOPT_URL => "https://api.binance.com/api/v1/ticker/24hr?symbol=BTCUSDT",
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => "",
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 30,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => "GET",
-            CURLOPT_HTTPHEADER => array(
-                "apikey: TZMPp6CmDEBJIgESoINrRmBu963Pft1OZc9iz6lia8xAFcL6RHIrqrLQAKfAGcDL",
-                "cache-control: no-cache",
-                "postman-token: f261e154-5bfd-5091-6ef1-161c14d9bcf2",
-                "secretkey: oSaJwiMYrA331cL6kPOuMK3bLGPNOu723CQlghqLY9oJIQgSP9kPm1dFSDlJKAwn"
-            ),
-        ));
-        $response = curl_exec($curl);
-        $err = curl_error($curl);
-        curl_close($curl);
-        if ($err) {
-            echo "cURL Error #:" . $err;
-        } else {
-            $response3 = json_decode($response, true);
-
-
-            $finalInsert['priceChange'] = $response3['priceChange'];
-            $finalInsert['priceChangePercent'] = $response3['priceChangePercent'];
-            $finalInsert['volume'] = $response3['volume'];
-            $finalInsert['quoteVolume'] = $response3['quoteVolume'];
-            $finalInsert['count'] = $response3['count'];
-
-            $h = 100 * ($response3['priceChange'] - $max['priceChange']) / $max['priceChange'];
-
-            $symbol = "\xF0\x9F\x92\xA4";
-            if ($h > 1) {
-                $symbol = "\xF0\x9F\x94\xA5";
-            } elseif ($h <= -1) {
-                $symbol = "\xF0\x9F\x93\x89";
-            }
-            $w = 100 * ($response3['volume'] - $max['volume']) / $max['volume'];
-            if ($w > 1) {
-                $resFinal = true;
-            }
-            $symbolW = "\xF0\x9F\x92\xA4";
-            if ($w > 1) {
-                $symbolW = "\xF0\x9F\x94\xA5";
-            } elseif ($w <= -1) {
-                $symbolW = "\xF0\x9F\x93\x89";
+                $res = "┌💎 #" . $finalInsert['symbol'] . "\n";
+                $res .= "├price: \n┊├►" . $max['price'] . " --> <b>" . $finalInsert['price'] . "</b> | ($symbolPrice" . round($percentPrice, 2) . "%)" . "\n";
+                $res .= "├AVGPrice: \n";
+                $res .= "┊├minutes: " . $finalInsert['mins'] . "\n";
+                $res .= "┊├Price: \n┊┊├►" . $max['avg_price'] . " --> <b>" . $finalInsert['price2'] . "</b> | ($symbolAvg" . round($percentAvg, 2) . " %)" . "\n";
+                $res .= "├24hr: \n";
+                $res .= "┊├Price: " . $finalInsert['priceChange'] . "($symbolChange" . round($percentChange, 0) . " %)" . "\n";
+                $res .= "┊├Price Percent: " . $finalInsert['priceChangePercent'] . "\n";
+                $res .= "┊├Volume: \n┊┊├►" . $max['volume'] . " --> <b>" . $finalInsert['volume'] . "</b> |($symbolVolume" . round($percentVolume, 2) . " %)" . "\n";
+                $res .= "┊├quoteVolume: " . $finalInsert['quoteVolume'] . "\n";
+                $res .= "┊├count: " . $finalInsert['count'] . "\n";
+                $res .= "└---------------------------------\n";
+                $res .= "\n @cryptoowatch \n\n";
             }
 
-            if ($response3['priceChange'] > 1) {
-                $response3['priceChange'] = number_format(round($response3['priceChange'], 2), 2);
+
+            $botman->say($res, $channel, TelegramDriver::class, ['parse_mode' => 'HTML']);
+            if ($resFinal == true) {
+                Data::create(
+                    [
+                        'symbol' => $finalInsert['symbol'],
+                        'price' => $finalInsert['price'],
+                        'avg_mines' => $finalInsert['mins'],
+                        'avg_price' => $finalInsert['price2'],
+                        'priceChange' => $finalInsert['priceChange'],
+                        'priceChangePercent' => $finalInsert['priceChangePercent'],
+                        'volume' => $finalInsert['volume'],
+                        'quoteVolume' => $finalInsert['quoteVolume'],
+                        'count' => $finalInsert['count'],
+                    ]
+                );
             }
-            if ($response3['volume'] > 1) {
-                $response3['volume'] = number_format(round($response3['volume'], 2), 2);
-            }
-            if ($response3['quoteVolume'] > 1) {
-                $response3['quoteVolume'] = number_format(round($response3['quoteVolume'], 2), 2);
-            }
-            $res .= "├24hr: \n";
-            $res .= "┊├Price: " . $response3['priceChange'] . "($symbol" . round($h, 0) . "%)" . "\n";
-            $res .= "┊├Price Percent: " . $response3['priceChangePercent'] . "\n";
-            $res .= "┊├Volume: " . $response3['volume'] . "($symbolW" . round($w, 0) . "%)" . "\n";
-            $res .= "┊├quoteVolume: " . $response3['quoteVolume'] . "\n";
-            $res .= "┊├count: " . $response3['count'] . "\n";
-            $res .= "---------------------------------\n";
-            $res .= "\n\n @cryptoowatch \n\n";
-            $i++;
-        }
-        if ($i == 3 && $resFinal) {
-            Data::create(
-                [
-                    'symbol' => $finalInsert['symbol'],
-                    'price' => $finalInsert['price'],
-                    'avg_mines' => $finalInsert['mins'],
-                    'avg_price' => $finalInsert['price2'],
-                    'priceChange' => $finalInsert['priceChange'],
-                    'priceChangePercent' => $finalInsert['priceChangePercent'],
-                    'volume' => $finalInsert['volume'],
-                    'quoteVolume' => $finalInsert['quoteVolume'],
-                    'count' => $finalInsert['count'],
-                ]
-            );
-            $botman->say($res, $channel, TelegramDriver::class);
         }
     }
 }
