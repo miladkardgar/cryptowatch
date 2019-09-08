@@ -7,6 +7,7 @@ use App\Data;
 use App\users_coin;
 use App\users_coins_check;
 use BotMan\Drivers\Telegram\TelegramDriver;
+use Carbon\Carbon;
 use Illuminate\Console\Command;
 
 class getDataCheck extends Command
@@ -273,10 +274,11 @@ class getDataCheck extends Command
                     $adminCheck .= $percentPrice . "--\n" . $percentVolume . "\n" . $finalInsert['symbol'];
 //                    $botman->say($adminCheck, $adminID, TelegramDriver::class);
                     if ($percentPrice >= $item['percent'] || $percentVolume >= $item['percent']) {
-                        $create = strtotime($item['created_at']);
-                        $now = time() - $create;
-                        $sendTime = $item['period'] * 60;
-                        if ($now > $sendTime) {
+
+                        $created = new Carbon($check['created_at']);
+                        $now = Carbon::now();
+
+                        if ($created->diff($now)->i > $item['period']) {
                             users_coins_check::create(
                                 [
                                     'user_id' => $item['user_id'],
@@ -296,6 +298,20 @@ class getDataCheck extends Command
                                 ]
                             );
 
+                            if($check['volume']>1){
+                              $check['volume'] = round($check['volume'],2);
+                            }
+                            if($finalInsert['volume']>1){
+                                $finalInsert['volume'] = round($finalInsert['volume'],2);
+                            }
+
+                            if($check['price']>1){
+                                $check['price'] = round($check['price'],2);
+                            }
+                            if($finalInsert['price']>1){
+                                $finalInsert['price']
+                                    = round($finalInsert['price'],2);
+                            }
                             $res = "┌💎 #" . $finalInsert['symbol'] . "\n";
                             $res .= "├price: \n┊├►" . $check['price'] . " --> <b>" . $finalInsert['price'] . "</b> | ($symbolPrice" . round($percentPrice, 0) . "%)" . "\n";
                             $res .= "├AVGPrice: \n";
@@ -310,6 +326,12 @@ class getDataCheck extends Command
                             $res .= "└---------------------------------\n";
                             $res .= "\n @cryptoowatch \n\n";
                             $botman->say($res, $userInfo['chat_id'], TelegramDriver::class, ['parse_mode' => 'HTML']);
+//                            $time = $finalInsert['symbol']."\n";
+//                            $time .= $created->diff($now)->i.":".$created->diff($now)->h.":".$created->diff($now)->s." -> ".$item['period'];
+//                            $time .= "\nVolume: ".round($percentVolume,2)."%";
+//                            $time .= "\nPrice: ".round($percentPrice,2)."%";
+//                            $time .= "\nPercent: ".$item['percent']."%";
+//                            $botman->say($time."\n\n".$userInfo['name']." ".$userInfo['last_name']."\n\n", $adminID, TelegramDriver::class, ['parse_mode' => 'HTML']);
                         }
                     }
                 }

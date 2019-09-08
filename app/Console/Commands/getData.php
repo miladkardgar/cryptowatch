@@ -228,16 +228,32 @@ class getData extends Command
 
             if ($percentPrice >= 1 || $percentVolume >= 1) {
                 $resFinal = true;
+                $maxVolume = $max['volume'];
+                $finalVolume = $finalInsert['volume'];
+                $maxPrice = $max['price'];
+                $finalPrice= $finalInsert['price'];
+                if($max['volume']>1){
+                    $maxVolume = round($max['volume'],2);
+                }
+                if($finalInsert['volume']>1){
+                    $finalVolume = round($finalInsert['volume'],2);
+                }
+                if($max['price']>1){
+                    $maxPrice = round($max['price'],2);
+                }
+                if($finalInsert['price']>1){
+                    $finalPrice = round($finalInsert['price'],2);
+                }
 
                 $res = "┌💎 #" . $finalInsert['symbol'] . "\n";
-                $res .= "├price: \n┊├►" . $max['price'] . " --> <b>" . $finalInsert['price'] . "</b> | ($symbolPrice" . round($percentPrice, 2) . "%)" . "\n";
+                $res .= "├price: \n┊├►" . $maxPrice . " --> <b>" . $finalPrice . "</b> | ($symbolPrice" . round($percentPrice, 2) . "%)" . "\n";
                 $res .= "├AVGPrice: \n";
                 $res .= "┊├minutes: " . $finalInsert['mins'] . "\n";
                 $res .= "┊├Price: \n┊┊├►" . $max['avg_price'] . " --> <b>" . $finalInsert['price2'] . "</b> | ($symbolAvg" . round($percentAvg, 2) . " %)" . "\n";
                 $res .= "├24hr: \n";
                 $res .= "┊├Price: " . $finalInsert['priceChange'] . "($symbolChange" . round($percentChange, 0) . " %)" . "\n";
                 $res .= "┊├Price Percent: " . $finalInsert['priceChangePercent'] . "\n";
-                $res .= "┊├Volume: \n┊┊├►" . $max['volume'] . " --> <b>" . $finalInsert['volume'] . "</b> |($symbolVolume" . round($percentVolume, 2) . " %)" . "\n";
+                $res .= "┊├Volume: \n┊┊├►" . $maxVolume . " --> <b>" . $finalVolume . "</b> |($symbolVolume" . round($percentVolume, 2) . " %)" . "\n";
                 $res .= "┊├quoteVolume: " . $finalInsert['quoteVolume'] . "\n";
                 $res .= "┊├count: " . $finalInsert['count'] . "\n";
                 $res .= "└---------------------------------\n";
