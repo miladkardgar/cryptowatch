@@ -34,5 +34,9 @@ return [
         'key' => env('STRIPE_KEY'),
         'secret' => env('STRIPE_SECRET'),
     ],
+    'urlbox' => [
+        'key'    => env('URLBOX_KEY'),
+        'secret' => env('URLBOX_SECRET')
+    ]
 
 ];

@@ -181,10 +181,10 @@ class getDataCheck extends Command
                     $botman->say($res, $userInfo['chat_id'], TelegramDriver::class);
                 } else {
 
-                    $percentPrice=0;
-                    $percentVolume=0;
-                    $percentAvgPrice=0;
-                    $percentChange=0;
+                    $percentPrice = 0;
+                    $percentVolume = 0;
+                    $percentAvgPrice = 0;
+                    $percentChange = 0;
                     $symbolVolume = "\xF0\x9F\x94\xBB";
                     $symbolPrice = "\xF0\x9F\x94\xBB";
                     $symbolAvg = "\xF0\x9F\x94\xBB";
@@ -204,9 +204,9 @@ class getDataCheck extends Command
                         }
 
                         if ($check['price'] < $finalInsert['price']) {
-                            $percentPrice*=-1;
+                            $percentPrice *= -1;
                             $symbolPrice = "\xF0\x9F\x94\xA5";
-                        } elseif($check['price'] == $finalInsert['price']) {
+                        } elseif ($check['price'] == $finalInsert['price']) {
                             $symbolPrice = "\xF0\x9F\x94\xB8";
                         }
                     }
@@ -224,9 +224,9 @@ class getDataCheck extends Command
                         }
 
                         if ($check['volume'] < $finalInsert['volume']) {
-                            $percentVolume*=-1;
+                            $percentVolume *= -1;
                             $symbolVolume = "\xF0\x9F\x94\xA5";
-                        } elseif($check['volume'] == $finalInsert['volume']) {
+                        } elseif ($check['volume'] == $finalInsert['volume']) {
                             $symbolVolume = "\xF0\x9F\x94\xB8";
                         }
                     }
@@ -243,9 +243,9 @@ class getDataCheck extends Command
                             $percentAvgPrice *= 100;
                         }
                         if ($check['avg_price'] < $finalInsert['price2']) {
-                            $percentAvgPrice*=-1;
+                            $percentAvgPrice *= -1;
                             $symbolAvg = "\xF0\x9F\x94\xA5";
-                        } elseif($check['avg_price'] == $finalInsert['price2']) {
+                        } elseif ($check['avg_price'] == $finalInsert['price2']) {
                             $symbolAvg = "\xF0\x9F\x94\xB8";
                         }
                     }
@@ -264,9 +264,9 @@ class getDataCheck extends Command
                         }
 
                         if ($check['priceChange'] < $finalInsert['priceChange']) {
-                            $percentChange*=-1;
+                            $percentChange *= -1;
                             $symbolChange = "\xF0\x9F\x94\xA5";
-                        } elseif($check['priceChange'] == $finalInsert['priceChange']) {
+                        } elseif ($check['priceChange'] == $finalInsert['priceChange']) {
                             $symbolChange = "\xF0\x9F\x94\xB8	";
                         }
                     }
@@ -298,19 +298,19 @@ class getDataCheck extends Command
                                 ]
                             );
 
-                            if($check['volume']>1){
-                              $check['volume'] = round($check['volume'],2);
+                            if ($check['volume'] > 1) {
+                                $check['volume'] = round($check['volume'], 2);
                             }
-                            if($finalInsert['volume']>1){
-                                $finalInsert['volume'] = round($finalInsert['volume'],2);
+                            if ($finalInsert['volume'] > 1) {
+                                $finalInsert['volume'] = round($finalInsert['volume'], 2);
                             }
 
-                            if($check['price']>1){
-                                $check['price'] = round($check['price'],2);
+                            if ($check['price'] > 1) {
+                                $check['price'] = round($check['price'], 2);
                             }
-                            if($finalInsert['price']>1){
+                            if ($finalInsert['price'] > 1) {
                                 $finalInsert['price']
-                                    = round($finalInsert['price'],2);
+                                    = round($finalInsert['price'], 2);
                             }
                             $res = "┌💎 #" . $finalInsert['symbol'] . "\n";
                             $res .= "├price: \n┊├►" . $check['price'] . " --> <b>" . $finalInsert['price'] . "</b> | ($symbolPrice" . round($percentPrice, 0) . "%)" . "\n";
@@ -326,6 +326,10 @@ class getDataCheck extends Command
                             $res .= "└---------------------------------\n";
                             $res .= "\n @cryptoowatch \n\n";
                             $botman->say($res, $userInfo['chat_id'], TelegramDriver::class, ['parse_mode' => 'HTML']);
+                            users_coin::where(
+                                [
+                                    ['id', '=',$item['id']]
+                            ])->increment('send_count',1);
 //                            $time = $finalInsert['symbol']."\n";
 //                            $time .= $created->diff($now)->i.":".$created->diff($now)->h.":".$created->diff($now)->s." -> ".$item['period'];
 //                            $time .= "\nVolume: ".round($percentVolume,2)."%";

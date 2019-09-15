@@ -10,9 +10,11 @@ use App\users_coin;
 use BotMan\BotMan\BotMan;
 use BotMan\BotMan\Messages\Incoming\Answer;
 use BotMan\BotMan\Messages\Outgoing\Actions\Button;
+use BotMan\BotMan\Messages\Outgoing\OutgoingMessage;
 use BotMan\BotMan\Messages\Outgoing\Question;
 use BotMan\Drivers\Telegram\Extensions\Keyboard;
 use BotMan\Drivers\Telegram\Extensions\KeyboardButton;
+use Urlbox\Screenshots\Urlbox;
 
 class ManageController extends Controller
 {
@@ -36,6 +38,12 @@ class ManageController extends Controller
 
     public function my_symbol(BotMan $bot)
     {
+
+        $options["url"] = "https://google.com";
+        $urlboxUrl = Urlbox::generateUrl($options);
+        $message = OutgoingMessage::create('This is a cute dog.')->withAttachment($urlboxUrl);
+        $bot->reply($message);
+
         $user = $bot->getUser();
         $userInfo = crypto_user::where('chat_id', $user->getId())->first();
         if ($userInfo['id']) {
