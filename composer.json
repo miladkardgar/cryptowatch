@@ -17,9 +17,9 @@
         "botman/studio-addons": "~1.3",
         "botman/tinker": "~1.0",
         "fideloper/proxy": "^4.0",
+        "guzzlehttp/guzzle": "^6.3",
         "laravel/framework": "5.7.*",
-        "laravel/tinker": "^1.0",
-        "urlbox/screenshots": "^2.0"
+        "laravel/tinker": "^1.0"
     },
     "require-dev": {
         "barryvdh/laravel-ide-helper": "^2.6",

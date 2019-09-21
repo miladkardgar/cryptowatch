@@ -14,7 +14,6 @@ use BotMan\BotMan\Messages\Outgoing\OutgoingMessage;
 use BotMan\BotMan\Messages\Outgoing\Question;
 use BotMan\Drivers\Telegram\Extensions\Keyboard;
 use BotMan\Drivers\Telegram\Extensions\KeyboardButton;
-use Urlbox\Screenshots\Urlbox;
 
 class ManageController extends Controller
 {
@@ -39,10 +38,6 @@ class ManageController extends Controller
     public function my_symbol(BotMan $bot)
     {
 
-        $options["url"] = "https://google.com";
-        $urlboxUrl = Urlbox::generateUrl($options);
-        $message = OutgoingMessage::create('This is a cute dog.')->withAttachment($urlboxUrl);
-        $bot->reply($message);
 
         $user = $bot->getUser();
         $userInfo = crypto_user::where('chat_id', $user->getId())->first();
@@ -60,24 +55,20 @@ class ManageController extends Controller
                     $res .= "\x23\xE2\x83\xA3	" . " درصد تغییر: " . $value['percent'] . "% " . "\n\n";
                     $res .= "\xF0\x9F\x92\xB1	" . " @cryptoowatch";
 
-//                    $question = Question::create($res)->addButtons(
-//                        [
-//                            Button::create('حذف')->value('delete')->name('delete2'),
-//                            Button::create('ویرایش')->value('edit')->name('edit2'),
-//                        ]
-//                    )->callbackId('id_'.$value['id']);
-                    $bot->ask($res,function (Answer $answer) {
-                        $this->say($answer->getCallbackId());
-                        if ($answer->isInteractiveMessageReply()) {
-//                            $this->say($answer->getCallbackId());
-//                            switch ($answer->getValue()) {
-//                                case 'delete':
-//                                    $this->say('delete');
-//                                    break;
-//                                case 'edit':
-//                                    $this->say('edit');
-//                                    break;
-//                            }
+                    $question = Question::create($res)->addButtons(
+                        [
+                            Button::create('حذف')->value('delete_' . $value['id']),
+                            Button::create('ویرایش')->value('edit_' . $value['id']),
+                        ]
+                    )->callbackId('id_' . $value['id']);
+                    $bot->ask($question, function (Answer $answer) {
+
+                        $infoCallBack = explode('_', $answer->getValue());
+                        $action = $infoCallBack[0];
+                        $id = $infoCallBack[1];
+                        if ($action == 'delete') {
+                            users_coin::where('id', $id)->delete();
+                            $this->reply("ارز مورد نظر از سیستم حذف گردید.");
                         }
                     }, $this->keyboard());
 

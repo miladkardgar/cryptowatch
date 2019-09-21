@@ -19,4 +19,10 @@ Route::match(['get', 'post'], '/botman', 'BotManController@handle');
 Route::get('/botman/tinker', 'BotManController@tinker');
 
 
+Route::get('/set', 'viewController@index');
+Route::get('/action/set', 'viewController@set')->name('action_set');
+Route::get('/action/update', 'viewController@update')->name('action_Update');
+Route::get('/action/disable', 'viewController@disable')->name('action_disable');
+
+
 Route::get('data/get','data@getData')->name('getData');
