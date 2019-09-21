@@ -226,7 +226,7 @@ class getData extends Command
                 }
             }
 
-            if ($percentPrice >= 1 || $percentVolume >= 1) {
+            if ($percentPrice >= 2 || $percentVolume >= 2) {
                 $resFinal = true;
                 $maxVolume = $max['volume'];
                 $finalVolume = $finalInsert['volume'];
