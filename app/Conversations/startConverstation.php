@@ -25,7 +25,6 @@ class startConverstation extends Conversation
 
     public function start()
     {
-
         $question = Question::create("سلام \n به ربات کریپتو واتچ خوش آمدید.\n\n
         این ربات یه شما کمک میکند تغییرات ارز های دیجیتال را به راحتی مدیریت نمایید.")
             ->fallback('Unable to ask question')
@@ -37,7 +36,6 @@ class startConverstation extends Conversation
 
         $this->ask($question, function (Answer $answer) {
             if ($answer->getValue() === 'startUse') {
-
                 $user = $this->bot->getUser();
                 $name = $user->getFirstName();
                 $lastName = $user->getLastName();
@@ -75,7 +73,7 @@ class startConverstation extends Conversation
         $res = $user->getFirstName() . ' ' . $user->getLastName() . "\n";
         $res .= "وقت بخیر" . "\n\n";
         $res .= 'لطفاً نام ارز مورد نظر را وارد نمایید.' . "\n";
-        $res .= ' مثال: BTCUSDT' . "\n\n";
+        $res .= ' مثال: BTC/USDT' . "\n\n";
         $this->ask($res, function (Answer $answer) {
             $validator = Validator::make(['coin' => $answer->getText()], [
                 'coin' => 'required|string',
@@ -122,24 +120,24 @@ class startConverstation extends Conversation
         $res .= 'مثال: 5' . "\n\n";
         $res .= '(هر پنج دقیقه یک بار)' . "\n\n \xE2\x8F\xB0	";
         $this->ask($res, function (Answer $answer) {
-                $validator = Validator::make(['time' => $answer->getText()], [
-                    'time' => 'integer|min:0|max:500',
+            $validator = Validator::make(['time' => $answer->getText()], [
+                'time' => 'integer|min:0|max:500',
+            ]);
+            if ($validator->valid()) {
+                users_coin::where('id', $this->coin_id)->update(
+                    [
+                        'period' => $answer->getText()
+                    ]
+                );
+                $this->bot->userStorage()->save([
+                    'time' => $answer->getText()??1,
                 ]);
-                if ($validator->valid()) {
-                    users_coin::where('id', $this->coin_id)->update(
-                        [
-                            'period' => $answer->getText()
-                        ]
-                    );
-                    $this->bot->userStorage()->save([
-                        'time' => $answer->getText(),
-                    ]);
 
-                    $this->askChange($this->coin_id);
-                } else {
-                    $this->say("\xE2\x9A\xA0	" . 'زمان وارد شده صحیح نمیباشد.' . "\n\n" . 'بازه زمانی بین 1 و 500 دقیقه میباشد.' . "\n\n" . 'لطفاً مجدد زمان را وارد نمایید.' . "\xE2\x9B\x94	");
-                    $this->askNextLevel($this->coin_id);
-                }
+                $this->askChange($this->coin_id);
+            } else {
+                $this->say("\xE2\x9A\xA0	" . 'زمان وارد شده صحیح نمیباشد.' . "\n\n" . 'بازه زمانی بین 1 و 500 دقیقه میباشد.' . "\n\n" . 'لطفاً مجدد زمان را وارد نمایید.' . "\xE2\x9B\x94	");
+                $this->askNextLevel($this->coin_id);
+            }
         });
     }
 
@@ -156,7 +154,7 @@ class startConverstation extends Conversation
             ]);
             if ($validator->valid()) {
                 $this->bot->userStorage()->save([
-                    'percent' => $answer->getText(),
+                    'percent' => $answer->getText()??1,
                 ]);
                 users_coin::where('id', $this->coin_id)->update(
                     [
@@ -177,9 +175,11 @@ class startConverstation extends Conversation
 
     public function check($symbol)
     {
+        $sy = strtoupper(str_replace("/", '', $symbol));
+
         $curl = curl_init();
         curl_setopt_array($curl, array(
-            CURLOPT_URL => "https://api.binance.com/api/v3/ticker/price?symbol=" . strtoupper($symbol),
+            CURLOPT_URL => "https://api.binance.com/api/v3/ticker/price?symbol=" . $sy,
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_ENCODING => "",
             CURLOPT_MAXREDIRS => 10,

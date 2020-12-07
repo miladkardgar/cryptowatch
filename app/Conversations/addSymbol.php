@@ -27,7 +27,7 @@ class addSymbol extends Conversation
         $res = $user->getFirstName() . ' ' . $user->getLastName() . "\n";
         $res .= "وقت بخیر" . "\n\n";
         $res .= 'لطفاً نام ارز مورد نظر را وارد نمایید.' . "\n";
-        $res .= ' مثال: BTCUSDT' . "\n\n";
+        $res .= ' مثال: BTC/USDT' . "\n\n";
         $this->ask($res, function (Answer $answer) {
             $validator = Validator::make(['coin' => $answer->getText()], [
                 'coin' => 'required|string',
@@ -84,7 +84,7 @@ class addSymbol extends Conversation
                     ]
                 );
                 $this->bot->userStorage()->save([
-                    'time' => $answer->getText(),
+                    'time' => $answer->getText() ?? 5,
                 ]);
                 $this->askChange($this->coin_id);
             } else {
@@ -107,7 +107,7 @@ class addSymbol extends Conversation
             ]);
             if ($validator->valid()) {
                 $this->bot->userStorage()->save([
-                    'percent' => $answer->getText(),
+                    'percent' => $answer->getText() ?? 1,
                 ]);
                 users_coin::where('id', $this->coin_id)->update(
                     [
@@ -128,9 +128,10 @@ class addSymbol extends Conversation
 
     public function check($symbol)
     {
+        $sy = strtoupper(str_replace("/", '', $symbol));
         $curl = curl_init();
         curl_setopt_array($curl, array(
-            CURLOPT_URL => "https://api.binance.com/api/v3/ticker/price?symbol=" . strtoupper($symbol),
+            CURLOPT_URL => "https://api.binance.com/api/v3/ticker/price?symbol=" . $sy,
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_ENCODING => "",
             CURLOPT_MAXREDIRS => 10,
@@ -146,6 +147,8 @@ class addSymbol extends Conversation
         ));
 
         $response = curl_exec($curl);
+        $this->say($response);
+
         $err = curl_error($curl);
         curl_close($curl);
         if ($err) {

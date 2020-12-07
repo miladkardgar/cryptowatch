@@ -51,10 +51,9 @@ class getDataCheck extends Command
 
         $symbols = users_coin::groupBy("symbol")->get();
         foreach ($symbols as $symbol => $value) {
-//            $botman->say($value['symbol'], $adminID, TelegramDriver::class);
             $curl = curl_init();
             curl_setopt_array($curl, array(
-                CURLOPT_URL => "https://api.binance.com/api/v3/ticker/price?symbol=" . strtoupper($value['symbol']),
+                CURLOPT_URL => "https://api.binance.com/api/v3/ticker/price?symbol=" . strtoupper(str_replace("/", "", $value['symbol'])),
                 CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_ENCODING => "",
                 CURLOPT_MAXREDIRS => 10,
@@ -81,7 +80,7 @@ class getDataCheck extends Command
 
             $curl = curl_init();
             curl_setopt_array($curl, array(
-                CURLOPT_URL => "https://api.binance.com/api/v3/avgPrice?symbol=" . strtoupper($value['symbol']),
+                CURLOPT_URL => "https://api.binance.com/api/v3/avgPrice?symbol=" . strtoupper(str_replace("/", "", $value['symbol'])),
                 CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_ENCODING => "",
                 CURLOPT_MAXREDIRS => 10,
@@ -108,7 +107,7 @@ class getDataCheck extends Command
 
             $curl = curl_init();
             curl_setopt_array($curl, array(
-                CURLOPT_URL => "https://api.binance.com/api/v1/ticker/24hr?symbol=" . strtoupper($value['symbol']),
+                CURLOPT_URL => "https://api.binance.com/api/v1/ticker/24hr?symbol=" . strtoupper(str_replace("/", "", $value['symbol'])),
                 CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_ENCODING => "",
                 CURLOPT_MAXREDIRS => 10,
@@ -136,9 +135,14 @@ class getDataCheck extends Command
                 $finalInsert['count'] = $response3['count'];
             }
 
-
             $usersList = users_coin::where('symbol', $value['symbol'])->get();
             foreach ($usersList as $item) {
+                $rsi1W = self::checkRSI('1w', $item['symbol']);
+                $rsi1D = self::checkRSI('1d', $item['symbol']);
+                $rsi12H = self::checkRSI('12h', $item['symbol']);
+                $rsi1H = self::checkRSI('1h', $item['symbol']);
+                $rsi5M = self::checkRSI('5m', $item['symbol']);
+
                 $check = users_coins_check::where(
                     [
                         ['symbol_id', '=', $item['id']],
@@ -159,28 +163,36 @@ class getDataCheck extends Command
                             'volume' => $finalInsert['volume'],
                             'quoteVolume' => $finalInsert['quoteVolume'],
                             'count' => $finalInsert['count'],
+                            'rsi1w' => $rsi1W,
+                            'rsi24h' => $rsi1D,
+                            'rsi12h' => $rsi12H,
+                            'rsi1h' => $rsi1H,
+                            'rsi5m' => $rsi5M,
                             'parent_id' => 0,
                             'volume_change' => 0,
                             'price_change' => 0,
                         ]
                     );
-                    $res = "---------------------------------\n";
-                    $res .= "┌💎 #" . $finalInsert['symbol'] . "\n";
+                    $res = "┌💎 #" . $finalInsert['symbol'] . "\n";
+                    $res .= "├More Information > \n";
                     $res .= "├price: " . $finalInsert['price'] . "\n";
-                    $res .= "├AVGPrice: \n";
-                    $res .= "┊├minutes: " . $finalInsert['mins'] . "\n";
-                    $res .= "┊├Price: " . $finalInsert['price2'] . "\n";
+                    $res .= "├AVGPrice in 5 Min: " . $finalInsert['price2'] . "\n";
                     $res .= "├24hr: \n";
-                    $res .= "┊├Price: " . $finalInsert['priceChange'] . "\n";
+                    $res .= "┊├Price: " . round($finalInsert['priceChange'], 3) . "\n";
                     $res .= "┊├Price Percent: " . $finalInsert['priceChangePercent'] . "\n";
-                    $res .= "┊├Volume: " . $finalInsert['volume'] . "\n";
-                    $res .= "┊├quoteVolume: " . $finalInsert['quoteVolume'] . "\n";
+                    $res .= "┊├Volume: " . number_format(round($finalInsert['volume'], 3)) . "\n";
+                    $res .= "┊├quoteVolume: " . number_format(round($finalInsert['quoteVolume'], 3)) . "\n";
                     $res .= "┊├count: " . $finalInsert['count'] . "\n";
-                    $res .= "---------------------------------\n";
-                    $res .= "\n\n @cryptoowatch \n\n";
+                    $res .= "├RSI: \n";
+                    $res .= "┊├RSI  1W: " . round($rsi1W) . "\n";
+                    $res .= "┊├RSI 24H: " . round($rsi1D) . "\n";
+                    $res .= "┊├RSI 12H: " . round($rsi12H) . "\n";
+                    $res .= "┊├RSI  1H: " . round($rsi1H) . "\n";
+                    $res .= "┊├RSI  5M: " . round($rsi5M) . "\n";
+                    $res .= "└---------------------------------\n";
+                    $res .= "\n @cryptoowatch \n\n";
                     $botman->say($res, $userInfo['chat_id'], TelegramDriver::class);
                 } else {
-
                     $percentPrice = 0;
                     $percentVolume = 0;
                     $percentAvgPrice = 0;
@@ -270,11 +282,7 @@ class getDataCheck extends Command
                             $symbolChange = "\xF0\x9F\x94\xB8	";
                         }
                     }
-                    $adminCheck = $check['price'] . "--\n" . $finalInsert['price'] . "\n\n";
-                    $adminCheck .= $percentPrice . "--\n" . $percentVolume . "\n" . $finalInsert['symbol'];
-//                    $botman->say($adminCheck, $adminID, TelegramDriver::class);
                     if ($percentPrice >= $item['percent'] || $percentVolume >= $item['percent']) {
-
                         $created = new Carbon($check['created_at']);
                         $now = Carbon::now();
 
@@ -292,6 +300,11 @@ class getDataCheck extends Command
                                     'volume' => $finalInsert['volume'],
                                     'quoteVolume' => $finalInsert['quoteVolume'],
                                     'count' => $finalInsert['count'],
+                                    'rsi1w' => $rsi1W ?? 0,
+                                    'rsi24h' => $rsi1D ?? 0,
+                                    'rsi12h' => $rsi12H ?? 0,
+                                    'rsi1h' => $rsi1H ?? 0,
+                                    'rsi5m' => $rsi5M ?? 0,
                                     'parent_id' => 0,
                                     'volume_change' => 0,
                                     'price_change' => 0,
@@ -309,27 +322,31 @@ class getDataCheck extends Command
                                 $check['price'] = round($check['price'], 2);
                             }
                             if ($finalInsert['price'] > 1) {
-                                $finalInsert['price']
-                                    = round($finalInsert['price'], 2);
+                                $finalInsert['price'] = round($finalInsert['price'], 2);
                             }
-                            $res = "┌💎 #" . $finalInsert['symbol'] . "\n";
-                            $res .= "├price: \n┊├►" . $check['price'] . " --> <b>" . $finalInsert['price'] . "</b> | ($symbolPrice" . round($percentPrice, 0) . "%)" . "\n";
-                            $res .= "├AVGPrice: \n";
-                            $res .= "┊├minutes: " . $finalInsert['mins'] . "\n";
-                            $res .= "┊├Price: \n┊┊├►" . $check['avg_price'] . " --> <b>" . $finalInsert['price2'] . "</b> | ($symbolAvg" . round($percentAvgPrice, 0) . " %)" . "\n";
+                            $res = " ┌💎 #" . $finalInsert['symbol'] . "\n";
+                            $res .= "├More Information > \n";
+                            $res .= "├price: \n┊├►" . $check['price'] . "\n┊├►<b>" . $finalInsert['price'] . "</b> | ($symbolPrice" . round($percentPrice, 0) . "%)" . "\n";
+                            $res .= "├AVGPrice in 5 Min: \n┊├►" . $check['avg_price'] . "\n┊├►<b>" . $finalInsert['price2'] . "</b> | ($symbolAvg" . round($percentAvgPrice, 0) . " %)" . "\n";
                             $res .= "├24hr: \n";
                             $res .= "┊├Price: " . $finalInsert['priceChange'] . "($symbolChange" . round($percentChange, 0) . " %)" . "\n";
                             $res .= "┊├Price Percent: " . $finalInsert['priceChangePercent'] . "\n";
-                            $res .= "┊├Volume: \n┊┊├►" . $check['volume'] . " --> <b>" . $finalInsert['volume'] . "</b> |($symbolVolume" . round($percentVolume, 0) . " %)" . "\n";
+                            $res .= "┊├Volume: \n┊┊├►" . $check['volume'] . " \n┊┊├►" . $finalInsert['volume'] . "</b> |($symbolVolume" . round($percentVolume, 0) . " %)" . "\n";
                             $res .= "┊├quoteVolume: " . $finalInsert['quoteVolume'] . "\n";
                             $res .= "┊├count: " . $finalInsert['count'] . "\n";
+                            $res .= "├RSI: \n";
+                            $res .= "┊├RSI  1W: " . round($rsi1W) . "\n";
+                            $res .= "┊├RSI 24H: " . round($rsi1D) . "\n";
+                            $res .= "┊├RSI 12H: " . round($rsi12H) . "\n";
+                            $res .= "┊├RSI  1H: " . round($rsi1H) . "\n";
+                            $res .= "┊├RSI  5M: " . round($rsi5M) . "\n";
                             $res .= "└---------------------------------\n";
                             $res .= "\n @cryptoowatch \n\n";
                             $botman->say($res, $userInfo['chat_id'], TelegramDriver::class, ['parse_mode' => 'HTML']);
                             users_coin::where(
                                 [
-                                    ['id', '=',$item['id']]
-                            ])->increment('send_count',1);
+                                    ['id', '=', $item['id']]
+                                ])->increment('send_count', 1);
 //                            $time = $finalInsert['symbol']."\n";
 //                            $time .= $created->diff($now)->i.":".$created->diff($now)->h.":".$created->diff($now)->s." -> ".$item['period'];
 //                            $time .= "\nVolume: ".round($percentVolume,2)."%";
@@ -341,5 +358,24 @@ class getDataCheck extends Command
                 }
             }
         }
+    }
+
+    public function checkRSI($interval, $symbol)
+    {
+        $endpoint = 'rsi';
+        $query = http_build_query(array(
+            'secret' => 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im1rLmthcmRnYXJAZ21haWwuY29tIiwiaWF0IjoxNjA3MzMwNDU1LCJleHAiOjc5MTQ1MzA0NTV9.Kc9UBpKYFDzJULlUUNJCoU3EEHe3FG9CvtLHV75Lb9Q',
+            'exchange' => 'binance',
+            'symbol' => strtoupper($symbol),
+            'interval' => $interval
+        ));
+        $url = "https://api.taapi.io/{$endpoint}?{$query}";
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        $output = curl_exec($ch);
+        curl_close($ch);
+        $e = json_decode($output);
+        return $e->value ?? 'error';
     }
 }

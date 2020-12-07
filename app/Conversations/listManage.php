@@ -23,8 +23,11 @@ class listManage extends Conversation
 
     public function my_symbol_list()
     {
+
+
         $user = $this->bot->getUser();
         $userInfo = crypto_user::where('chat_id', $user->getId())->first();
+
         if ($userInfo['id']) {
             $list = users_coin::where('user_id', $userInfo['id'])->get();
             if (sizeof($list) >= 1) {
