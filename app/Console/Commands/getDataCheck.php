@@ -48,8 +48,8 @@ class getDataCheck extends Command
         $botman = app('botman');
         $adminID = env('ADMIN_ID');
         $finalInsert = array();
-
-        $symbols = users_coin::groupBy("symbol")->get();
+$rsi=0;
+$symbols = users_coin::groupBy("symbol")->get();
         foreach ($symbols as $symbol => $value) {
             $curl = curl_init();
             curl_setopt_array($curl, array(
@@ -133,7 +133,22 @@ class getDataCheck extends Command
                 $finalInsert['volume'] = $response3['volume'];
                 $finalInsert['quoteVolume'] = $response3['quoteVolume'];
                 $finalInsert['count'] = $response3['count'];
+
+
+                $avgHigh = $response3['highPrice'] / 24;
+                $avgLow = $response3['lowPrice'] / 24;
+
+                $upAvg = ($avgHigh * (24 - 1) + $response3['lastPrice']) / 24;
+                $downAvg = ($avgLow * (24 - 1) + $response3['prevClosePrice']) / 24;
+                $rs = $upAvg / $downAvg;
+                $rsi = (100 - (100 / (1 + $rs)));
+
+
             }
+
+
+
+
 
             $usersList = users_coin::where('symbol', $value['symbol'])->get();
             foreach ($usersList as $item) {
@@ -143,12 +158,15 @@ class getDataCheck extends Command
                 $rsi1H = self::checkRSI('1h', $item['symbol']);
                 $rsi5M = self::checkRSI('5m', $item['symbol']);
 
+
                 $check = users_coins_check::where(
                     [
                         ['symbol_id', '=', $item['id']],
                         ['user_id', '=', $item['user_id']],
                     ])->latest('id')->first();
                 $userInfo = crypto_user::find($item['user_id']);
+//                $botman->say("RSI TEST:".$finalInsert['symbol'] ."<br/>".$rsi, $userInfo['chat_id'], TelegramDriver::class);
+
                 if (!$check['id']) {
                     users_coins_check::create(
                         [
@@ -189,6 +207,7 @@ class getDataCheck extends Command
                     $res .= "┊├RSI 12H: " . round($rsi12H) . "\n";
                     $res .= "┊├RSI  1H: " . round($rsi1H) . "\n";
                     $res .= "┊├RSI  5M: " . round($rsi5M) . "\n";
+                    $res .= "┊├RSITest: " . round($rsi) . "\n";
                     $res .= "└---------------------------------\n";
                     $res .= "\n @cryptoowatch \n\n";
                     $botman->say($res, $userInfo['chat_id'], TelegramDriver::class);

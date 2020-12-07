@@ -27,3 +27,4 @@ Route::get('/action/info', 'viewController@info')->name('action_info');
 
 
 Route::get('data/get','data@getData')->name('getData');
+Route::get('test/code','viewController@testCode');
